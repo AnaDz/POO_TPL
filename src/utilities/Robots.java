@@ -10,7 +10,7 @@ package utilities;
  * @author skip
  */
 public class Robots {
-    protected int vitesse;
+    /*protected int vitesse;
     protected case position; 
     
     public case getPosition(){
@@ -20,7 +20,7 @@ public class Robots {
     public void setPosition(case p){
         this.position=p;
     }
-    
+    */
     
     
     
