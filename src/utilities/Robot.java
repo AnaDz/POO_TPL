@@ -69,6 +69,11 @@ class Robot {
         return vitesse;
     }
     
+    public int getVolumeRestant() {
+        return this.volumeRestant;
+    }
+    
+    
     public void remplirReservoir(){
         this.volumeRestant=this.capaciteMax;        
     }
@@ -120,6 +125,16 @@ class Drone extends Robot {
         this.capaciteMax = 10000;
     }
     
+    @Override
+    public void remplirReservoir(){
+        if (this.position.getNatureTerrain() == NatureTerrain.EAU) {
+            this.volumeRestant=this.capaciteMax;
+        } else {
+            /* LEVER UNE EXCEPTION */
+            throw new IllegalArgumentException("le drone essaye de se remplir en dehors de l'eau");
+        }            
+    }
+    
 }
 
 
@@ -141,13 +156,13 @@ class RobotAChenilles extends Robot {
     
     @Override 
     public void setPosition(Case p){
-        if (p.nature != NatureTerrain.EAU && p.nature != NatureTerrain.ROCHE ) {      
+        if (p.getNatureTerrain() != NatureTerrain.EAU && p.getNatureTerrain() != NatureTerrain.ROCHE ) {      
             this.position=p;
         } else {
             throw new IllegalArgumentException("Un robot à chenilles essaye de sortir de son terrain");
         }
         
-        if (p.nature == NatureTerrain.FORET) {
+        if (p.getNatureTerrain() == NatureTerrain.FORET) {
             this.vitesse = this.vitesseDefaut/2;
         } else {
             this.vitesse = this.vitesseDefaut;
@@ -166,6 +181,12 @@ class RobotAChenilles extends Robot {
         this.capaciteMax = 2000;
     }
     
+    @Override
+    public void remplirReservoir(){
+        
+             
+    }
+    
 }
 
 
@@ -182,12 +203,12 @@ class RobotAPattes extends Robot {
     
     @Override
     public void setPosition(Case p) {
-        if (p.nature != NatureTerrain.EAU) {
+        if (p.getNatureTerrain() != NatureTerrain.EAU) {
             this.position=p;
         } else {
             throw new IllegalArgumentException("Un robot à pattes essaye de marcher sur l'eau");
         }
-        if (p.nature == NatureTerrain.ROCHE) {
+        if (p.getNatureTerrain() == NatureTerrain.ROCHE) {
             this.vitesse = 10;
         } else {
             this.vitesse = this.vitesseDefaut;
@@ -221,7 +242,7 @@ class RobotARoues extends Robot {
     
     @Override 
     public void setPosition(Case p){
-        if (p.nature == NatureTerrain.TERRAIN_LIBRE || p.nature == NatureTerrain.HABITAT ) {      
+        if (p.getNatureTerrain() == NatureTerrain.TERRAIN_LIBRE || p.getNatureTerrain() == NatureTerrain.HABITAT ) {      
             this.position=p;
             this.vitesse = this.vitesseDefaut;
         } else {
