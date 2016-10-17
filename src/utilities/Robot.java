@@ -12,7 +12,12 @@ package utilities;
 
 /* ce qui est a traiter :  Temps remplir et vider */
 
-public class Robot {
+
+  /***********************/
+ /* CLASSE MERE : ROBOT */
+/***********************/
+
+class Robot {
     
     protected double vitesse;
     
@@ -82,5 +87,159 @@ public class Robot {
     public String toString() {
         return new String("le robot a une vitesse de " + this.vitesse + "km/h et une capacité de " + this.capaciteMax + "L et une vitesse par défaut de "+this.vitesseDefaut + "km/h");
     }
+}
+
+
+  /************************/
+ /* CLASSE FILLE : DRONE */
+/************************/
+
+class Drone extends Robot {
+
+    
+    @Override
+    protected void setVitesseDefaut(double v){
+        if (v >= 0 && v <= 150) {
+            this.vitesseDefaut = v;
+        } else {
+            this.vitesseDefaut = 100;
+        }    
+    }
+    
+    /*Pas besoin de modifier setPosition car le drone peut voler partout */
+    
+    /* Constructeurs */
+    
+    public Drone(Case pos) {
+        super(pos); 
+        this.capaciteMax = 10000;
+    }
+
+    public Drone(double vitesse, Case pos) {
+        super(vitesse, pos);
+        this.capaciteMax = 10000;
+    }
     
 }
+
+
+  /************************************/
+ /* CLASSE FILLE : ROBOT A CHENILLES */
+/************************************/
+
+class RobotAChenilles extends Robot {
+    
+
+    @Override 
+    protected void setVitesseDefaut(double v) {
+        if (v >= 0){
+            this.vitesseDefaut = v;
+        } else {
+            this.vitesseDefaut = 60;
+        }
+    }
+    
+    @Override 
+    public void setPosition(Case p){
+        if (p.nature != NatureTerrain.EAU && p.nature != NatureTerrain.ROCHE ) {      
+            this.position=p;
+        } else {
+            throw new IllegalArgumentException("Un robot à chenilles essaye de sortir de son terrain");
+        }
+        
+        if (p.nature == NatureTerrain.FORET) {
+            this.vitesse = this.vitesseDefaut/2;
+        } else {
+            this.vitesse = this.vitesseDefaut;
+        }
+    }
+    
+    /* constructeurs */
+
+    public RobotAChenilles(Case pos) {
+        super(pos);
+        this.capaciteMax = 2000;
+    }
+
+    public RobotAChenilles(double vitesse, Case pos) {
+        super(vitesse, pos);
+        this.capaciteMax = 2000;
+    }
+    
+}
+
+
+  /*********************************/
+ /* CLASSE FILLE : ROBOT A PATTES */
+/*********************************/
+
+class RobotAPattes extends Robot {
+
+    @Override
+    protected void setVitesseDefaut(double v){
+       this.vitesseDefaut = 30;
+    }
+    
+    @Override
+    public void setPosition(Case p) {
+        if (p.nature != NatureTerrain.EAU) {
+            this.position=p;
+        } else {
+            throw new IllegalArgumentException("Un robot à pattes essaye de marcher sur l'eau");
+        }
+        if (p.nature == NatureTerrain.ROCHE) {
+            this.vitesse = 10;
+        } else {
+            this.vitesse = this.vitesseDefaut;
+        }
+    }
+    
+    /* constructeur */
+    
+    public RobotAPattes(Case pos) {
+        super(pos);
+        /* capacité max infinie comment faire ? */
+    }
+    
+}
+
+
+  /********************************/
+ /* CLASSE FILLE : ROBOT A ROUES */
+/********************************/
+
+class RobotARoues extends Robot {
+
+    @Override 
+    protected void setVitesseDefaut(double v) {
+        if (v >= 0){
+            this.vitesseDefaut = v;
+        } else {
+            this.vitesseDefaut = 80;
+        }
+    }
+    
+    @Override 
+    public void setPosition(Case p){
+        if (p.nature == NatureTerrain.TERRAIN_LIBRE || p.nature == NatureTerrain.HABITAT ) {      
+            this.position=p;
+            this.vitesse = this.vitesseDefaut;
+        } else {
+            throw new IllegalArgumentException("Un robot à roues essaye de sortir de son terrain");
+        }
+    }
+    
+    /*Constructeurs */
+    
+    public RobotARoues(Case pos) {
+        super(pos);
+        this.capaciteMax = 5000;
+    }
+
+    public RobotARoues(double vitesse, Case pos) {
+        super(vitesse, pos);
+        this.capaciteMax = 5000;
+    }
+    
+}
+
