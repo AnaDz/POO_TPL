@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package robots;
-
+import carte.*;
 
 /**
  *
@@ -15,7 +15,7 @@ package robots;
  /* CLASSE FILLE : ROBOT A ROUES */
 /********************************/
 
-class RobotARoues extends Robot {
+public class RobotARoues extends Robot {
 
     @Override 
     protected void setVitesseDefaut(double v) {

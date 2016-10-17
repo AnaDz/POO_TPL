@@ -4,13 +4,13 @@
  * and open the template in the editor.
  */
 package robots;
-
+import carte.*;
 
 /**
  *
  * @author skip
  */
-public class Robot {
+
     /* ce qui est a traiter :  Temps remplir et vider */
 
 
@@ -18,7 +18,7 @@ public class Robot {
  /* CLASSE MERE : ROBOT */
 /***********************/
 
-abstract public class Robot {
+abstract class Robot {
     
     protected double vitesse;
     
@@ -83,4 +83,4 @@ abstract public class Robot {
     }
 }
 
-}
+

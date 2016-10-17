@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package robots;
+import carte.*;
 
 /**
  *
@@ -15,7 +16,7 @@ package robots;
  /* CLASSE FILLE : DRONE */
 /************************/
 
-class Drone extends Robot {
+public class Drone extends Robot {
 
     
     @Override
