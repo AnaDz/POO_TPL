@@ -39,15 +39,17 @@ public class LecteurDonnees {
      * LecteurDonnees.lire(fichierDonnees)
      * @param fichierDonnees nom du fichier à lire
      */
-    public static void lire(String fichierDonnees)
+    public static DonneesSimulation lire(String fichierDonnees)
         throws FileNotFoundException, DataFormatException {
         System.out.println("\n == Lecture du fichier" + fichierDonnees);
         LecteurDonnees lecteur = new LecteurDonnees(fichierDonnees);
         Carte carte = lecteur.lireCarte();
-        lecteur.lireIncendies();
-        lecteur.lireRobots();
+        List<Incendie> listeIncendies = lecteur.lireIncendies(carte);
+        List<Robot> listeRobots = lecteur.lireRobots(carte);
+        DonneesSimulation res = new DonneesSimulation(carte, listeIncendies, listeRobots);
         scanner.close();
         System.out.println("\n == Lecture terminee");
+        return res;
     }
 
 
@@ -116,7 +118,8 @@ public class LecteurDonnees {
             verifieLigneTerminee();
             System.out.print("nature = " + chaineNature);
             nature = NatureTerrain.valueOf(chaineNature);
-            carte.getCase(lig, col).setNatureTerrain(nature);
+            Case c = new Case(lig, col, nature);
+            carte.setCase(lig, col, c);
 
         } catch (NoSuchElementException e) {
             throw new DataFormatException("format de case invalide. "
@@ -217,7 +220,7 @@ public class LecteurDonnees {
 
             
             // lecture eventuelle d'une vitesse du robot (entier)
-            System.out.print("; \t vitesse = ");
+            System.out.print(";\t\tvitesse = ");
             String s = scanner.findInLine("(\\d+)");	// 1 or more digit(s) ?
             // pour lire un flottant:    ("(\\d+(\\.\\d+)?)");
 
@@ -226,55 +229,47 @@ public class LecteurDonnees {
                 switch(type)
                 {
                         case "DRONE" : 
-                        	System.out.print("Le robot "+type+" a été crée en position ("+lig+","+col+")."); 
                         	rob = new Drone(carte.getCase(lig, col));
                         	listeRobots.add(rob);
                         	break;
-                        case "ROUES" : 
-                        	System.out.print("Le robot "+type+" a été crée en position ("+lig+","+col+").");
+                        case "ROUES" :
                         	rob = new RobotARoues(carte.getCase(lig, col));
                         	listeRobots.add(rob);
                         	break;
-                        case "PATTES" : 
-                        	System.out.print("Le robot "+type+" a été crée en position ("+lig+","+col+")."); 
+                        case "PATTES" :
                         	rob = new RobotAPattes(carte.getCase(lig,col));
                         	listeRobots.add(rob);
                         	break;
-                        case "CHENILLES" : 
-                        	System.out.print("Le robot "+type+" a été crée en position ("+lig+","+col+").");
+                        case "CHENILLES" :
                         	rob = new RobotAChenilles(carte.getCase(lig,col));
                         	listeRobots.add(rob);
                         	break;
-                        default : System.out.print("Le robot "+type+" n'existe pas.");
+                        default : System.out.println("Le robot "+type+" n'existe pas.");
                         //levee exception
                 }
             } else {
                 int vitesse = Integer.parseInt(s);
-                
+                System.out.print(vitesse);
                 switch(type)
                 {
-                        case "DRONE" : 
-                        	System.out.print("Le robot "+type+" a été crée en position ("+lig+","+col+")."); 
+                        case "DRONE" :
                         	rob = new Drone(vitesse, carte.getCase(lig, col));
                         	listeRobots.add(rob);
                         	break;
-                        case "ROUES" : 
-                        	System.out.print("Le robot "+type+" a été crée en position ("+lig+","+col+").");
+                        case "ROUES" :
                         	rob = new RobotARoues(vitesse, carte.getCase(lig, col));
                         	listeRobots.add(rob);
                         	break;
-                        case "PATTES" : 
-                        	System.out.print("Le robot "+type+" a été crée en position ("+lig+","+col+")."); 
+                        case "PATTES" :
                         	System.out.println("Attention, la vitesse du robot à pattes ne peut pas être modifié.");;
                         	rob = new RobotAPattes(carte.getCase(lig,col));
                         	listeRobots.add(rob);
                         	break;
                         case "CHENILLES" : 
-                        	System.out.print("Le robot "+type+" a été crée en position ("+lig+","+col+").");
                         	rob = new RobotAChenilles(vitesse, carte.getCase(lig,col));
                         	listeRobots.add(rob);
                         	break;
-                        default : System.out.print("Le robot "+type+" n'existe pas.");
+                        default : System.out.println("Le robot "+type+" n'existe pas.");
                         //levee exception
                 }
             }

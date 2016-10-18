@@ -1,18 +1,17 @@
 package DonneesSimulation;
 import carte.*;
-import robots.*;
 import java.util.List;
-import java.util.ArrayList;
+import robots.*;
 
 public class DonneesSimulation {
 	private Carte carte;
 	private List<Incendie> listeIncendies;
 	private List<Robot> listeRobots;
 	
-	public DonneesSimulation(int nbLignes, int nbColonnes, int tailleCases){
-		carte = new Carte(nbLignes, nbColonnes, tailleCases);
-		//listeIncendies = new ArrayList<Incendie>();
-		listeRobots = new ArrayList<Robot>();
+	public DonneesSimulation(Carte carte, List<Incendie> listeIncendies, List<Robot> listeRobots){
+		this.carte = carte;
+		this.listeIncendies = listeIncendies;
+		this.listeRobots = listeRobots;
 	}
 	
 	//Accesseurs

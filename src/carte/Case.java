@@ -24,4 +24,8 @@ public class Case {
 		return nature;
 	}
 	
+	public void setNatureTerrain(NatureTerrain n){
+		nature = n;
+	}
+	
 }

@@ -18,7 +18,7 @@ import carte.*;
  /* CLASSE MERE : ROBOT */
 /***********************/
 
-abstract class Robot {
+public abstract class Robot {
     
     protected double vitesse;
     
