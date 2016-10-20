@@ -10,6 +10,8 @@ public class DonneesSimulation {
 	
 	public DonneesSimulation(Carte carte, List<Incendie> listeIncendies, List<Robot> listeRobots){
 		this.carte = carte;
+		//On n'oublie pas de donner la carte à nos robots.
+		Robot.setCarte(carte); 
 		this.listeIncendies = listeIncendies;
 		this.listeRobots = listeRobots;
 	}
