@@ -28,10 +28,15 @@ public class Drone extends Robot {
         }    
     }
     
+    @Override
     public void setPosition(Case p) {
         /* TODO gérer si null on met n'importe où, si non null on verifie voisin */
         this.position = p;
-        this.vitesse = this.vitesseDefaut;
+    }
+    
+    @Override
+    public double getVitesse(NatureTerrain nature){
+        return this.vitesseDefaut;
     }
     /* Constructeurs */
     

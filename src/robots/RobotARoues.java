@@ -28,11 +28,22 @@ public class RobotARoues extends Robot {
     
     @Override 
     public void setPosition(Case p){
-        if (p.getNatureTerrain() == NatureTerrain.TERRAIN_LIBRE || p.getNatureTerrain() == NatureTerrain.HABITAT ) {      
+        if (this.getVitesse(p.getNatureTerrain())!=0 ) {      
             this.position=p;
-            this.vitesse = this.vitesseDefaut;
         } else {
             throw new IllegalArgumentException("Un robot à roues essaye de sortir de son terrain");
+        }
+    }
+    
+    @Override
+    public double getVitesse(NatureTerrain nature) {
+        switch(nature.toString()){
+            case "TERRAIN_LIBRE" :
+            case "HABITAT" :
+                return this.vitesseDefaut;
+      
+            default :
+                return 0;
         }
     }
     

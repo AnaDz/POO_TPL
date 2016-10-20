@@ -24,15 +24,22 @@ public class RobotAPattes extends Robot {
     
     @Override
     public void setPosition(Case p) {
-        if (p.getNatureTerrain() != NatureTerrain.EAU) {
+        if (this.getVitesse(p.getNatureTerrain()) != 0) {
             this.position=p;
         } else {
             throw new IllegalArgumentException("Un robot à pattes essaye de marcher sur l'eau");
         }
-        if (p.getNatureTerrain() == NatureTerrain.ROCHE) {
-            this.vitesse = 10;
-        } else {
-            this.vitesse = this.vitesseDefaut;
+    }
+    
+    @Override
+    public double getVitesse(NatureTerrain nature) {
+        switch(nature.toString()){
+            case "ROCHE":
+                return 10;
+            case "EAU" :
+                return 0;
+            default :
+                return this.vitesseDefaut;
         }
     }
     

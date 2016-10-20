@@ -20,8 +20,6 @@ import carte.*;
 
 public abstract class Robot {
     
-    protected double vitesse;
-    
     protected double vitesseDefaut=0;
     
     protected Case position; 
@@ -36,7 +34,10 @@ public abstract class Robot {
     /* de base, dès qu'on modifie la position on modifie la vitesse en conséquence*/
         
     abstract public void setPosition(Case p);
-     
+
+    abstract public double getVitesse(NatureTerrain nature);
+
+
     /*constructeur qui ne modifie pas la vitesse par défaut*/
     public Robot(Case pos) {
         this.setVitesseDefaut(-1);
@@ -56,9 +57,7 @@ public abstract class Robot {
     }
 
     
-    public double getVitesse(NatureTerrain nature){
-        return vitesse;
-    }
+
     
     public int getVolumeRestant() {
         return this.volumeRestant;
@@ -79,7 +78,7 @@ public abstract class Robot {
 
     @Override
     public String toString() {
-        return new String("le robot a une vitesse de " + this.vitesse + "km/h et une capacité de " + this.capaciteMax + "L et une vitesse par défaut de "+this.vitesseDefaut + "km/h");
+        return new String("le robot a une vitesse de " + this.getVitesse(this.getPosition().getNatureTerrain()) + "km/h et une capacité de " + this.capaciteMax + "L et une vitesse par défaut de "+this.vitesseDefaut + "km/h");
     }
 }
 

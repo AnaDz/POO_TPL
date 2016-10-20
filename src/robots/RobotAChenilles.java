@@ -30,16 +30,23 @@ public class RobotAChenilles extends Robot {
     
     @Override 
     public void setPosition(Case p){
-        if (p.getNatureTerrain() != NatureTerrain.EAU && p.getNatureTerrain() != NatureTerrain.ROCHE ) {      
+        if (this.getVitesse(p.getNatureTerrain()) != 0) {      
             this.position=p;
         } else {
             throw new IllegalArgumentException("Un robot à chenilles essaye de sortir de son terrain");
         }
-        
-        if (p.getNatureTerrain() == NatureTerrain.FORET) {
-            this.vitesse = this.vitesseDefaut/2;
-        } else {
-            this.vitesse = this.vitesseDefaut;
+    }
+    
+    @Override
+    public double getVitesse(NatureTerrain nature){
+        switch(nature.toString()){
+            case "FORET":
+                return this.vitesseDefaut/2;
+            case "EAU" :
+            case "ROCHE" :
+                return 0;
+            default :
+                return this.vitesseDefaut;
         }
     }
     
