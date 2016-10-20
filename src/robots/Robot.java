@@ -28,7 +28,13 @@ public abstract class Robot {
     
     protected int volumeRestant = 0;
     
+    static protected Carte carte ;
 
+    
+    /* Cette fonction est à appeller dans lecteur donnée */
+    static public void setCarte(Carte crt) {
+        carte = crt ;
+    }
     
     abstract protected void setVitesseDefaut(double v);
     /* de base, dès qu'on modifie la position on modifie la vitesse en conséquence*/
