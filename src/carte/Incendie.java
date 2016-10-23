@@ -16,4 +16,8 @@ public class Incendie {
 	public int getNbLitres(){
 		return nbLitres;
 	}
+        
+        public void eteindre(int vol) {
+            this.nbLitres -= vol;
+        }
 }

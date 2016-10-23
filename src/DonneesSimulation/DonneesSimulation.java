@@ -28,4 +28,14 @@ public class DonneesSimulation {
 	public List<Robot> getListeRobots(){
 		return listeRobots;
 	}
+        
+        public Incendie getIncendie(Case position){
+            for(int i=0; i<this.getListeIncendies().size(); i++){
+                Incendie incendie = this.listeIncendies.get(i);
+                if (incendie.getCaseIncendie() == position ) {
+                    return incendie;
+                }
+            }
+            return null;
+        }
 }

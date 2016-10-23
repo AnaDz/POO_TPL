@@ -85,14 +85,15 @@ public abstract class Robot {
     
     abstract public void remplirReservoir();
     
+    
     public void deverserEau(int vol){
-        if (vol>=this.volumeRestant) {
+        Incendie incendievise = donnees.getIncendie(this.position);
+        if (vol>=this.volumeRestant && incendievise != null) {
             this.volumeRestant -= vol;
+            incendievise.eteindre(vol);
         } else {
-            throw new IllegalArgumentException("Volume supérieur au volume restant");
+            throw new IllegalArgumentException("Volume supérieur au volume restant ou robot n'est pas sur un incendie");
         }
-        
-        /* à ajouter quand besoin de répercuter sur le feu*/
     }
     
     

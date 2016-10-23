@@ -38,7 +38,7 @@ public class RobotAPattes extends Robot {
     
     public RobotAPattes(Case pos) {
         super(pos);
-        /* capacité max infinie comment faire ? */
+        this.capaciteMax = (int) Double.POSITIVE_INFINITY;
     }
     
     @Override
