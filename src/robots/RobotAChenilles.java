@@ -56,6 +56,7 @@ public class RobotAChenilles extends Robot {
     
     @Override
     public void remplirReservoir(){
+        Carte carte = donnees.getCarte();
         for (Direction dir : Direction.values()){
             if (carte.voisinExiste(this.position, dir) && carte.getVoisin(this.position, dir).getNatureTerrain()==NatureTerrain.EAU){
                 this.volumeRestant = this.capaciteMax ;

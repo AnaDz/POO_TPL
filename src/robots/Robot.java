@@ -5,6 +5,7 @@
  */
 package robots;
 import carte.*;
+import DonneesSimulation.DonneesSimulation;
 
 /**
  *
@@ -28,12 +29,12 @@ public abstract class Robot {
     
     protected int volumeRestant = 0;
     
-    static protected Carte carte ;
+    static protected DonneesSimulation donnees ;
 
     
     /* Cette fonction est à appeller dans lecteur donnée */
-    static public void setCarte(Carte crt) {
-        carte = crt ;
+    static public void setDS(DonneesSimulation ds) {
+        donnees = ds;
     }
     
     abstract protected void setVitesseDefaut(double v);
@@ -63,7 +64,7 @@ public abstract class Robot {
             NatureTerrain nat = p.getNatureTerrain();
             double vitesse = this.getVitesse(nat);
             Direction dir = this.getDirection(p);
-            if(vitesse != 0 && dir != null && carte.voisinExiste(p, dir)) {
+            if(vitesse != 0 && dir != null && donnees.getCarte().voisinExiste(p, dir)) {
                 this.position = p;
             } else {
                 /*exception*/

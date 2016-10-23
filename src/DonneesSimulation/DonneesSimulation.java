@@ -9,11 +9,11 @@ public class DonneesSimulation {
 	private List<Robot> listeRobots;
 	
 	public DonneesSimulation(Carte carte, List<Incendie> listeIncendies, List<Robot> listeRobots){
-		this.carte = carte;
-		//On n'oublie pas de donner la carte à nos robots.
-		Robot.setCarte(carte); 
+		this.carte = carte; 
 		this.listeIncendies = listeIncendies;
 		this.listeRobots = listeRobots;
+                //On n'oublie pas de donner les donées à nos robots.
+                Robot.setDS(this);
 	}
 	
 	//Accesseurs
