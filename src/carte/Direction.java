@@ -17,4 +17,34 @@ public enum Direction {
 	int getY(){
 		return dir[1];
 	}
+        
+        static public Direction getDir(int l, int c){
+            switch(l){
+                case 0 :
+                    switch(c){
+                        case 1:
+                            return EST;
+                        case -1:
+                            return OUEST;
+                        default :
+                            return null;
+                    }
+                case 1 :
+                    switch(c){
+                        case 0:
+                            return NORD;
+                        default :
+                            return null;
+                    }
+                case -1 :
+                    switch(c){
+                        case 0 :
+                            return SUD;
+                        default:
+                            return null;
+                    }
+                default :
+                    return null;
+            }
+        }
 }

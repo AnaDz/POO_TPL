@@ -38,8 +38,7 @@ public abstract class Robot {
     
     abstract protected void setVitesseDefaut(double v);
     /* de base, dès qu'on modifie la position on modifie la vitesse en conséquence*/
-        
-    abstract public void setPosition(Case p);
+       
 
     abstract public double getVitesse(NatureTerrain nature);
 
@@ -56,14 +55,27 @@ public abstract class Robot {
         this.setPosition(pos);
     }
     
-    
+    public void setPosition(Case p){
+        /* TODO vérifier que case dans carte */
+        if (this.position == null) {
+            this.position = p;
+        } else {
+            NatureTerrain nat = p.getNatureTerrain();
+            double vitesse = this.getVitesse(nat);
+            Direction dir = this.getDirection(p);
+            if(vitesse != 0 && dir != null && carte.voisinExiste(p, dir)) {
+                this.position = p;
+            } else {
+                /*exception*/
+            }
+        }
+    }
     
     public Case getPosition(){
         return position;
     }
 
-    
-
+   
     
     public int getVolumeRestant() {
         return this.volumeRestant;
@@ -80,6 +92,14 @@ public abstract class Robot {
         }
         
         /* à ajouter quand besoin de répercuter sur le feu*/
+    }
+    
+    
+    protected Direction getDirection(Case p) {
+        int dif_ligne = p.getLigne()- this.getPosition().getLigne();
+        int dif_colonne = p.getColonne() - this.getPosition().getColonne();
+ 
+        return Direction.getDir(dif_ligne, dif_colonne);
     }
 
     @Override

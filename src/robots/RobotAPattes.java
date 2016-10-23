@@ -23,15 +23,6 @@ public class RobotAPattes extends Robot {
     }
     
     @Override
-    public void setPosition(Case p) {
-        if (this.getVitesse(p.getNatureTerrain()) != 0) {
-            this.position=p;
-        } else {
-            throw new IllegalArgumentException("Un robot à pattes essaye de marcher sur l'eau");
-        }
-    }
-    
-    @Override
     public double getVitesse(NatureTerrain nature) {
         switch(nature.toString()){
             case "ROCHE":
@@ -50,7 +41,7 @@ public class RobotAPattes extends Robot {
         /* capacité max infinie comment faire ? */
     }
     
-        @Override
+    @Override
     public void remplirReservoir(){
         /*LEVER UNE EXCEPTION "vous essayez de remplir d'eau un robot à pattes*/             
     }

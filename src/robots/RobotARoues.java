@@ -4,12 +4,9 @@
  * and open the template in the editor.
  */
 package robots;
+
 import carte.*;
 
-/**
- *
- * @author skip
- */
 
   /********************************/
  /* CLASSE FILLE : ROBOT A ROUES */
@@ -26,14 +23,6 @@ public class RobotARoues extends Robot {
         }
     }
     
-    @Override 
-    public void setPosition(Case p){
-        if (this.getVitesse(p.getNatureTerrain())!=0 ) {      
-            this.position=p;
-        } else {
-            throw new IllegalArgumentException("Un robot à roues essaye de sortir de son terrain");
-        }
-    }
     
     @Override
     public double getVitesse(NatureTerrain nature) {
@@ -61,8 +50,13 @@ public class RobotARoues extends Robot {
     
     @Override
     public void remplirReservoir(){
-        
+        for (Direction dir : Direction.values()){
+            if (carte.voisinExiste(this.position, dir) && carte.getVoisin(this.position, dir).getNatureTerrain()==NatureTerrain.EAU){
+                this.volumeRestant = this.capaciteMax ;
+            } else {
+                /*exception*/
+            }
+        }        
              
     }
 }
-
