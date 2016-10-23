@@ -16,7 +16,7 @@ public class TestLecteurDonnees {
         }
 
         try {
-            DonneesSimulation data = LecteurDonnees.lire(args[0]);
+            DonneesSimulation data = LecteurDonnees.lire(args[0], false);
             //TEST
             //Affichage de la carte
             for(int i = 0; i < data.getCarte().getNbLignes(); i++){
