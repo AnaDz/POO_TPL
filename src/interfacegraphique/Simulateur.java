@@ -1,13 +1,22 @@
 package interfacegraphique;
 import gui.GUISimulator;
 import gui.Rectangle;
+import gui.ImageElement;
 import gui.Simulable;
 import gui.Text;
 import java.awt.Color;
+import java.awt.image.ImageObserver;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import carte.*;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 public class Simulateur implements Simulable {
 	
@@ -46,31 +55,48 @@ public class Simulateur implements Simulable {
     	//à implémenter
     }
     
-    /**Partie Dessin**/
-    private void drawCase(int x, int y, NatureTerrain nature, int tailleCases){
+    /**Partie Dessin
+     * @throws IOException **/
+    private void drawCase(int x, int y, NatureTerrain nature, int tailleCases) {
     	Color color = null;
+    	String pathImage = null;
+    	ImageElement image;
+    	
     	switch(nature) {
-	    	case EAU: 
-	    		color = Color.decode("#0066FF"); //bleu
-	            break;
+	    	case EAU:
+	    		pathImage = "images/water.png";
+	    		image = new ImageElement(x-tailleCases/2, y-tailleCases/2, pathImage, tailleCases+1, tailleCases+1, null);
+	    		gui.addGraphicalElement(image);
+	    		break;
 	    	case FORET:
 	    		color = Color.decode("#006600"); //vert
+	    		gui.addGraphicalElement(new Rectangle(x , y , color, color, tailleCases));
+	    		pathImage = "images/tree.png";
+	    		image = new ImageElement(x-tailleCases/2, y-(int) 2*tailleCases, pathImage, tailleCases, (int) 2.5*tailleCases, null);	
+	    		gui.addGraphicalElement(image);
 	    		break;
 	    	case ROCHE:
-	    		color = Color.decode("#663300"); //marron
+	    		color = Color.decode("#663300"); //vert
+	    		gui.addGraphicalElement(new Rectangle(x , y , color, color, tailleCases));
+	    		pathImage = "images/rock.png";
+	    		image = new ImageElement(x-tailleCases/2, y-tailleCases/2, pathImage, tailleCases, tailleCases, null);
+	    		gui.addGraphicalElement(image);
 	    		break;
 	    	case TERRAIN_LIBRE:
-	    		color = Color.decode("#FFFF99"); //creme
+	    		pathImage = "images/cherrygrove.png";
+	    		image = new ImageElement(x-tailleCases/2, y-tailleCases/2, pathImage, tailleCases+1, tailleCases+1, null);
+	    		gui.addGraphicalElement(image);
 	    		break;
 	    	case HABITAT:
 	    		color = Color.decode("#990033"); //violet
+	    		gui.addGraphicalElement(new Rectangle(x , y , color, color, tailleCases));
 	    		break;
 	    	default:
 	    		System.out.println("Nature du terrain non reconnue. Fermeture de la fenêtre graphique");
 	    		//lever exception
 	    		break;
     	}
-    	gui.addGraphicalElement(new Rectangle(x , y , color, color, tailleCases));
+    	//gui.addGraphicalElement(new Rectangle(x , y , color, color, tailleCases));
     }
     
     private void drawCarte(){
