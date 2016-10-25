@@ -45,5 +45,9 @@ public class RobotAPattes extends Robot {
     public void remplirReservoir(){
         /*LEVER UNE EXCEPTION "vous essayez de remplir d'eau un robot à pattes*/             
     }
+    
+    public String getFileOfRobot(){
+    	return "images/robots/pattes/";
+    }
 }
 

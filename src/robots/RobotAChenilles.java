@@ -66,5 +66,9 @@ public class RobotAChenilles extends Robot {
         }    
     }
     
+    public String getFileOfRobot(){
+    	return "images/robots/chenille/";
+    }
+    
 }
 

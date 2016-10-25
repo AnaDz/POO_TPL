@@ -108,6 +108,8 @@ public abstract class Robot {
     public String toString() {
         return new String("le robot a une vitesse de " + this.getVitesse(this.getPosition().getNatureTerrain()) + "km/h et une capacité de " + this.capaciteMax + "L et une vitesse par défaut de "+this.vitesseDefaut + "km/h");
     }
+    
+    public abstract String getFileOfRobot();
 }
 
 

@@ -55,6 +55,8 @@ public class Drone extends Robot {
         }            
     }
    
-    
+    public String getFileOfRobot(){
+    	return "images/robots/drone/";
+    }
 }
 

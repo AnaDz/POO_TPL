@@ -60,4 +60,9 @@ public class RobotARoues extends Robot {
         }        
              
     }
+    
+    public String getFileOfRobot(){
+    	return "images/robots/roues/";
+    }
+    
 }

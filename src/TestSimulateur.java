@@ -25,12 +25,10 @@ public class TestSimulateur {
             DonneesSimulation data = LecteurDonnees.lire(args[0], false);
             
             //Initialisation
-            Carte carte = data.getCarte();
-            int tailleCases = carte.getTailleCases();
             int dimFenX = 500;
             int dimFenY = 500;
             GUISimulator gui = new GUISimulator(dimFenX, dimFenY, Color.BLACK);
-            Simulateur sim = new Simulateur(gui, carte);
+            Simulateur sim = new Simulateur(gui, data);
             
         } catch (FileNotFoundException e) {
             System.out.println("fichier " + args[0] + " inconnu ou illisible");
