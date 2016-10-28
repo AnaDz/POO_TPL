@@ -1,26 +1,14 @@
 package interfacegraphique;
 
 import gui.GUISimulator;
-import gui.Rectangle;
 import gui.ImageElement;
 import gui.Simulable;
-import gui.Text;
-import java.awt.Color;
-import java.awt.image.ImageObserver;
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import carte.*;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import robots.*;
 import DonneesSimulation.DonneesSimulation;
-
+import java.io.*;
+import java.util.*;
+import java.util.zip.DataFormatException;
 public class Simulateur implements Simulable {
 
     /**
@@ -39,6 +27,9 @@ public class Simulateur implements Simulable {
      */
     private int tailleCases;
 
+    /**La liste des ImageElement associées aux robots**/
+    private List<ImageElement> ListeRobots;
+    
     public Simulateur(GUISimulator gui, DonneesSimulation data) {
         //On instancie les attributs
         this.gui = gui;
@@ -52,12 +43,14 @@ public class Simulateur implements Simulable {
         if (carte.getTailleCases() * carte.getNbLignes() > dimFenX || carte.getTailleCases() * carte.getNbColonnes() > dimFenY) {
             //pour adapter l'échelle de la carte à la taille de la fenetre graphique
             int minDim = (dimFenX > dimFenY ? dimFenY : dimFenX);
-            System.out.println("getHeight() = " + gui.getPanelHeight() + " et getWidth() = " + gui.getPanelWidth());
             tailleCases = (minDim == dimFenX ? minDim / carte.getNbLignes() : minDim / carte.getNbColonnes());
         } else {
             tailleCases = carte.getTailleCases();
         }
+        
 
+        gui.reset();
+        
         //On dessine la carte
         drawCarte();
 
@@ -66,6 +59,7 @@ public class Simulateur implements Simulable {
 
         //On dessine les incencies
         drawListIncendies();
+        
     }
 
     /**
@@ -134,11 +128,9 @@ public class Simulateur implements Simulable {
                 //lever exception
                 break;
         }
-        //gui.addGraphicalElement(new Rectangle(x , y , color, color, tailleCases));
     }
 
     private void drawCarte() {
-        gui.reset();
         Carte carte = data.getCarte();
 
         for (int i = 0; i < carte.getNbLignes(); i++) {
