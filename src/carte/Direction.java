@@ -1,7 +1,7 @@
 package carte;
 
 public enum Direction {
-	NORD(new int[] {0,1}), SUD(new int[] {0,-1}), EST(new int[] {1,0}), OUEST(new int[] {-1,0});
+	NORD(new int[] {-1,0}), SUD(new int[] {1,0}), EST(new int[] {0,1}), OUEST(new int[] {0,-1});
 	
 	private int dir[] = new int[2];
 	
@@ -10,11 +10,11 @@ public enum Direction {
 		this.dir[1] = dir[1];
 	}
 	
-	int getX(){
+	public int getX(){
 		return dir[0];
 	}
 	
-	int getY(){
+	public int getY(){
 		return dir[1];
 	}
         
@@ -29,14 +29,14 @@ public enum Direction {
                         default :
                             return null;
                     }
-                case 1 :
+                case -1 :
                     switch(c){
                         case 0:
                             return NORD;
                         default :
                             return null;
                     }
-                case -1 :
+                case 1 :
                     switch(c){
                         case 0 :
                             return SUD;

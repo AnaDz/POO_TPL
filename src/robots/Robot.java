@@ -31,6 +31,9 @@ public abstract class Robot {
     
     static protected DonneesSimulation donnees ;
 
+    protected boolean occupe; //indique si le robot est occupé à se deplacer, eteindre un incendie, ou remplir son reservoir.
+    
+    protected Direction dir; //indique le sens de déplacement, null si ne se déplace pas
     
     /* Cette fonction est à appeller dans lecteur donnée */
     static public void setDS(DonneesSimulation ds) {
@@ -48,12 +51,14 @@ public abstract class Robot {
     public Robot(Case pos) {
         this.setVitesseDefaut(-1);
         this.setPosition(pos);
+        this.occupe = false;
     }
     
     /*constructeur avec une nouvelle vitesse définie*/
     public Robot(double vitesse, Case pos) {
         this.setVitesseDefaut(vitesse);
         this.setPosition(pos);
+        this.occupe = false;
     }
     
     public void setPosition(Case p){
@@ -104,6 +109,22 @@ public abstract class Robot {
         return Direction.getDir(dif_ligne, dif_colonne);
     }
 
+    public boolean getOccupe(){
+    	return occupe;
+    }
+    
+    public void switchOccupe(){
+    	this.occupe = !this.occupe;
+    }
+    
+    public Direction getDirection(){
+    	return dir;
+    }
+    
+    public void setDirection(Direction dir){
+    	this.dir = dir;
+    }
+    
     @Override
     public String toString() {
         return new String("le robot a une vitesse de " + this.getVitesse(this.getPosition().getNatureTerrain()) + "km/h et une capacité de " + this.capaciteMax + "L et une vitesse par défaut de "+this.vitesseDefaut + "km/h");

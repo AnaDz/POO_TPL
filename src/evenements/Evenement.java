@@ -18,6 +18,7 @@ public abstract class Evenement implements Comparable<Evenement> {
 	public String toString(){
 		return "Evenement de date = "+date;
 	}
+	
 	//On réalise l'interface Comparable<E> pour pouvoir insérer les evenements dans une file à priorités.
 	public int compareTo(Evenement e){
 		if (this.date < e.getDate())

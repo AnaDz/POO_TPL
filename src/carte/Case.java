@@ -24,6 +24,10 @@ public class Case {
 		return nature;
 	}
 	
+	public String toString(){
+		return ("("+ligne+","+colonne+")");
+	}
+	
 	public void setNatureTerrain(NatureTerrain n){
 		nature = n;
 	}
