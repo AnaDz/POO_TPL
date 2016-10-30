@@ -47,23 +47,43 @@ public class RobotAChenilles extends Robot {
     public RobotAChenilles(Case pos) {
         super(pos);
         this.capaciteMax = 2000;
+        this.tempsRemplissageComp = 5;
+        this.interventionUnitaire = (int) (100/8) + 1;
+        this.volumeRestant = this.capaciteMax;
     }
 
     public RobotAChenilles(double vitesse, Case pos) {
         super(vitesse, pos);
         this.capaciteMax = 2000;
+        this.tempsRemplissageComp = 5;
+        this.interventionUnitaire = (int) (100/8) + 1;
+        this.volumeRestant = this.capaciteMax;
     }
     
     @Override
     public void remplirReservoir(){
-        Carte carte = donnees.getCarte();
-        for (Direction dir : Direction.values()){
-            if (carte.voisinExiste(this.position, dir) && carte.getVoisin(this.position, dir).getNatureTerrain()==NatureTerrain.EAU){
-                this.volumeRestant = this.capaciteMax ;
-            } else {
-                /*exception*/
-            }
-        }    
+    	if (peutRemplirReservoir())
+        	this.volumeRestant = this.capaciteMax;
+    }
+    
+    public void remplirReservoir(int qte){
+    	if(peutRemplirReservoir()) {
+        	if(this.volumeRestant + qte <= this.capaciteMax) {
+        		this.volumeRestant +=  qte;
+        	} else {
+        		this.volumeRestant = this.capaciteMax;
+        	}
+        }
+    }
+    
+    @Override
+    public boolean peutRemplirReservoir(){
+    	 Carte carte = donnees.getCarte();
+         for (Direction dir : Direction.values()){
+             if (carte.voisinExiste(this.position, dir) && carte.getVoisin(this.position, dir).getNatureTerrain()==NatureTerrain.EAU)
+                 return true;
+         }
+         return false;
     }
     
     public String getFileOfRobot(){

@@ -17,7 +17,12 @@ public class Incendie {
 		return nbLitres;
 	}
         
-        public void eteindre(int vol) {
-            this.nbLitres -= vol;
-        }
+    public void eteindre(int vol) {
+        this.nbLitres -= vol;
+    }
+    
+    @Override
+    public String toString() {
+    	return "Incendie en position "+caseIncendie.toString()+" d'intensité "+nbLitres;
+    }
 }

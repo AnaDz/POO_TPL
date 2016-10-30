@@ -3,6 +3,8 @@ package interfacegraphique;
 import gui.GUISimulator;
 import gui.ImageElement;
 import gui.Simulable;
+
+import java.awt.image.ImageObserver;
 import java.io.IOException;
 import carte.*;
 import DonneesSimulation.DonneesSimulation;
@@ -32,13 +34,11 @@ public class Simulateur implements Simulable {
      * fenetre graphique *
      */
     private int tailleCases;
-
-    /**La liste des ImageElement associées aux robots**/
-    private List<ImageElement> listeRobots;
     
     /**La liste des ImageElement associées aux incendies**/
     private List<ImageElement> listeIncendies;
     
+    private int [][] coordImageRobot;
     
     private int indiceImage = 0;
     
@@ -49,9 +49,10 @@ public class Simulateur implements Simulable {
         this.data = data;
         Carte carte = data.getCarte();
         this.GE = GE;
-        listeRobots = new ArrayList<ImageElement>();
+        //listeRobots = new ArrayList<ImageElement>();
         listeIncendies = new ArrayList<ImageElement>();
-
+        coordImageRobot = new int[data.getListeRobots().size()][2];
+        
         //On détermine la nouvelle tailleCases
         int dimFenX = gui.getPanelWidth();
         int dimFenY = gui.getPanelHeight();
@@ -82,7 +83,10 @@ public class Simulateur implements Simulable {
     @Override
     public void next() {
     	if(!GE.simulationTerminee()){
+	        gui.reset();
 	        GE.incrementeDate();
+	        drawCarte();
+	        refreshIncendies();
 	        refreshRobots();
     	}
     	else
@@ -160,7 +164,8 @@ public class Simulateur implements Simulable {
         int x = R.getPosition().getLigne() * tailleCases;
         int y = R.getPosition().getColonne() * tailleCases;
         ImageElement image = new ImageElement(y, x, pathImage, tailleCases + 1, tailleCases + 1, null);
-        listeRobots.add(image);
+        coordImageRobot[data.getListeRobots().indexOf(R)][0] = y;
+        coordImageRobot[data.getListeRobots().indexOf(R)][1] = x;
         gui.addGraphicalElement(image);
     }
 
@@ -185,61 +190,147 @@ public class Simulateur implements Simulable {
         }
     }
     
+    private void refreshIncendies(){
+    	Incendie inc;
+    	int x, y;
+    	for(int i = 0; i < data.getListeIncendies().size(); i++){
+    		inc = data.getListeIncendies().get(i);
+    		x = inc.getCaseIncendie().getLigne() * tailleCases;
+    		y = inc.getCaseIncendie().getColonne() * tailleCases;
+    		ImageElement image = new ImageElement(y, x, "images/fire.png", tailleCases+1, tailleCases+1, null);
+    		gui.addGraphicalElement(image);
+    	}
+    }
     private void refreshRobots(){
     //Ce refresh à lieu toutes les GestionnaireEvents.h minutes
-    	int imageX, imageY, robotX, robotY;
     	Robot rob;
-    	for(int i = 0; i < listeRobots.size(); i++){
-    		imageX = listeRobots.get(i).getY();
-    		imageY = listeRobots.get(i).getX();
+    	for(int i = 0; i < data.getListeRobots().size(); i++){
     		rob = data.getListeRobots().get(i);
-    		robotX = rob.getPosition().getLigne()*tailleCases;
-    		robotY = rob.getPosition().getColonne()*tailleCases;
-    		if(imageX != robotX || imageY != robotY){
-    			bougeRobot(rob, i, imageX, imageY);
-    		}
-    		else {
-    			//si le robot ne bouge pas et qu'il est sur une case appropriée, alors il remplit son réservoir
+    		switch(rob.getAction()){
+    		case DEPLACE:
+    			bougeRobot(rob, i);
+    			break;
+    		case REMPLIR:
+    			remplitReservoir(rob, i, (int) (GE.getPasDeTemps() * rob.getCapaciteMax()/rob.getTempsRemplissageComp()) +1);
+    			break;
+    		case VERSER:
+    			verseReservoir(rob, i, (int) (GE.getPasDeTemps() * rob.getInterventionUnitaire() * 60)+1);
+    			break;
+    		case INNOCUPE:
+    			//On réactualise juste l'image du robot, et on le met de face pour montrer qu'il attend de nouvelles instructions
+    			String pathImage = rob.getFileOfRobot() + "SUD1.png";
+    			ImageElement image = new ImageElement(coordImageRobot[i][0], coordImageRobot[i][1], pathImage, tailleCases + 1, tailleCases + 1, null);
+    			gui.addGraphicalElement(image);
+    			break;
+    		default:
+    			System.out.println("Action non reconnue.");
+    			break;
     		}
     	}
     }
     
-    private void bougeRobot(Robot rob, int indexRob, int imageX, int imageY){
+    private void bougeRobot(Robot rob, int indexRob){
     	double vitesse = rob.getVitesse(rob.getPosition().getNatureTerrain());
     	int distanceParcourue = (int) (vitesse*GE.getPasDeTemps()*1000/60); //distance parcourue à echelle réelle
     	distanceParcourue = distanceParcourue*tailleCases/data.getCarte().getTailleCases();//distance parcourue à échelle de la carte
-    	
-    	String pathImage = rob.getFileOfRobot() + rob.getDirection().toString() + indiceImage + ".png";
-    	indiceImage = (indiceImage+1)%3;
-    	ImageElement image = new ImageElement(listeRobots.get(indexRob).getX(), listeRobots.get(indexRob).getY(), pathImage, tailleCases + 1, tailleCases + 1, null);
+    	int depX = coordImageRobot[indexRob][0];
+    	int depY = coordImageRobot[indexRob][1];
+    	int arriveX = (rob.getPosition().getColonne()+rob.getDirection().getY())*tailleCases;
+    	int arriveY = (rob.getPosition().getLigne()+rob.getDirection().getX())*tailleCases;
     	
     	if(rob.getDirection().getX() == 0){
     		//DEPLACEMENT HORIZONTAL
-    		int distanceRestante = Math.abs(imageY-rob.getPosition().getColonne()*tailleCases); 
-    		if(distanceParcourue > distanceRestante){
+    		int distanceRestante = Math.abs(depX-arriveX); 
+    		if(distanceParcourue >= distanceRestante){
     			//on est arrivés
-    			listeRobots.get(indexRob).translate(rob.getDirection().getY()*distanceRestante, 0);
-    			rob.switchOccupe();
+    			coordImageRobot[indexRob][0] += rob.getDirection().getY()*distanceRestante;
+    			int lig = rob.getPosition().getLigne();
+    			int col = rob.getPosition().getColonne()+rob.getDirection().getY();
+    			rob.setPosition(data.getCarte().getCase(lig, col));
+    			rob.switchAction(Action.INNOCUPE);
     		}
     		else {
     			//on est pas arrivés
-    			listeRobots.get(indexRob).translate(rob.getDirection().getY()*distanceParcourue, 0);
+    			coordImageRobot[indexRob][0] += rob.getDirection().getY()*distanceParcourue; 
     		}
     	}
     	else {
     		//DEPLACEMENT VERTICAL
-    		int distanceRestante = Math.abs(imageX-rob.getPosition().getLigne()*tailleCases);
-    		if(distanceParcourue > distanceRestante){
+    		int distanceRestante = Math.abs(depY-arriveY);
+    		if(distanceParcourue >= distanceRestante){
     			//on est arrivés
-    			listeRobots.get(indexRob).translate(0, rob.getDirection().getX()*distanceRestante);
-    			rob.switchOccupe();
-    			System.out.println(rob.getOccupe());
+    			coordImageRobot[indexRob][1] += rob.getDirection().getX()*distanceRestante;
+    			int lig = rob.getPosition().getLigne()+rob.getDirection().getX();
+    			int col = rob.getPosition().getColonne();
+    			rob.setPosition(data.getCarte().getCase(lig, col));
+    			rob.switchAction(Action.INNOCUPE);
     		}
     		else {
     			//on est pas arrivés
-    			listeRobots.get(indexRob).translate(0, rob.getDirection().getX()*distanceParcourue);
+    			coordImageRobot[indexRob][1] += rob.getDirection().getX()*distanceParcourue; 
     		}
     	}
-    		
+    	String pathImage = rob.getFileOfRobot() + rob.getDirection().toString() + indiceImage + ".png";
+    	indiceImage = (indiceImage+1)%2;
+    	ImageElement image = new ImageElement(coordImageRobot[indexRob][0], coordImageRobot[indexRob][1], pathImage, tailleCases + 1, tailleCases + 1, null);
+    	
+    	gui.addGraphicalElement(image);
+    }
+    
+    private void remplitReservoir(Robot rob, int indexRob, int qte){
+    	String pathImage;
+    	if(rob.getDirection().toString() == null) {
+    		pathImage = rob.getFileOfRobot() + "SUD" + indiceImage + ".png";
+    	} else {
+    		pathImage = rob.getFileOfRobot() + rob.getDirection().toString() + indiceImage + ".png";
+    	}
+    	//Elements graphiques
+    	ImageElement image = new ImageElement(coordImageRobot[indexRob][0], coordImageRobot[indexRob][1], pathImage, tailleCases + 1, tailleCases + 1, null);
+    	gui.addGraphicalElement(image);
+    	pathImage = "images/remplir.png";
+    	image = new ImageElement(coordImageRobot[indexRob][0], coordImageRobot[indexRob][1], pathImage, tailleCases + 1, tailleCases + 1, null);
+    	gui.addGraphicalElement(image);
+    	//On remplit le robot
+    	rob.remplirReservoir(qte);
+    	
+    	//On ajoute une "alarme graphique" si le robot est totalement remplit.
+    	if(rob.getCapaciteMax() == rob.getVolumeRestant()){
+    		pathImage = "images/bubble.png";
+    		image = new ImageElement(coordImageRobot[indexRob][0], coordImageRobot[indexRob][1]+tailleCases, pathImage, tailleCases + 1, tailleCases + 1, null);
+    		gui.addGraphicalElement(image);
+    		//Ajouter un wait pour qu'on ai le temps de voir l'alarme
+    		rob.switchAction(Action.INNOCUPE);
+    	}
+    }
+    
+    private void verseReservoir(Robot rob, int indexRob, int qte){
+    	String pathImage;
+    	if(rob.getDirection().toString() == null) {
+    		pathImage = rob.getFileOfRobot() + "SUD" + indiceImage + ".png";
+    	} else {
+    		pathImage = rob.getFileOfRobot() + rob.getDirection().toString() + indiceImage + ".png";
+    	}
+    	//Elements graphiques
+    	ImageElement image = new ImageElement(coordImageRobot[indexRob][0], coordImageRobot[indexRob][1], pathImage, tailleCases + 1, tailleCases + 1, null);
+    	gui.addGraphicalElement(image);
+    	pathImage = "images/verser.png";
+    	image = new ImageElement(coordImageRobot[indexRob][0], coordImageRobot[indexRob][1], pathImage, tailleCases + 1, tailleCases + 1, null);
+    	gui.addGraphicalElement(image);
+    	//On remplit le robot
+    	if(rob.getVolumeRestant() < qte){
+    		rob.deverserEau(rob.getVolumeRestant());
+    	} else {
+    		rob.deverserEau(qte);
+    	}
+    	
+    	if(rob.getVolumeRestant() <= 0){
+    		rob.switchAction(Action.INNOCUPE);
+    	}
+    	
+    	Incendie incendievise = data.getIncendie(rob.getPosition());
+    	if(incendievise.getNbLitres() <= 0) {
+    		data.getListeIncendies().remove(incendievise);
+    		rob.switchAction(Action.INNOCUPE);
+    	}
     }
 }

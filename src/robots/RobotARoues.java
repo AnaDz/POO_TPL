@@ -41,24 +41,45 @@ public class RobotARoues extends Robot {
     public RobotARoues(Case pos) {
         super(pos);
         this.capaciteMax = 5000;
+        this.tempsRemplissageComp = 10;
+        this.interventionUnitaire = 20;
+        this.volumeRestant = this.capaciteMax;
     }
 
     public RobotARoues(double vitesse, Case pos) {
         super(vitesse, pos);
         this.capaciteMax = 5000;
+        this.tempsRemplissageComp = 10;
+        this.interventionUnitaire = 20;
+        this.volumeRestant = this.capaciteMax;
     }
     
     @Override
     public void remplirReservoir(){
-        Carte carte = donnees.getCarte();
-        for (Direction dir : Direction.values()){
-            if (carte.voisinExiste(this.position, dir) && carte.getVoisin(this.position, dir).getNatureTerrain()==NatureTerrain.EAU){
-                this.volumeRestant = this.capaciteMax ;
-            } else {
-                /*exception*/
-            }
-        }        
-             
+        if(peutRemplirReservoir())
+        	this.volumeRestant = this.capaciteMax;
+    }
+    
+    public void remplirReservoir(int qte){
+        if(peutRemplirReservoir()) {
+        	if(this.volumeRestant + qte <= this.capaciteMax) {
+        		this.volumeRestant +=  qte;
+        	} else {
+        		this.volumeRestant = this.capaciteMax;
+        	}
+        }
+    }
+    
+    @Override
+    public boolean peutRemplirReservoir(){
+    	Carte carte = donnees.getCarte();
+    	if(this.volumeRestant < this.capaciteMax) {
+	        for (Direction dir : Direction.values()){
+	            if (carte.voisinExiste(this.position, dir) && carte.getVoisin(this.position, dir).getNatureTerrain()==NatureTerrain.EAU)
+	                return true;
+	        }
+    	}
+        return false;
     }
     
     public String getFileOfRobot(){

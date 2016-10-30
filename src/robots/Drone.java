@@ -38,23 +38,43 @@ public class Drone extends Robot {
     public Drone(Case pos) {
         super(pos); 
         this.capaciteMax = 10000;
+        this.tempsRemplissageComp = 30;
+        this.interventionUnitaire = (int) (10000/30) + 1;
+        this.volumeRestant = this.capaciteMax;
     }
 
     public Drone(double vitesse, Case pos) {
         super(vitesse, pos);
         this.capaciteMax = 10000;
+        this.tempsRemplissageComp = 30;
+        this.interventionUnitaire = (int) (10000/30) + 1;
+        this.volumeRestant = this.capaciteMax;
     }
     
     @Override
     public void remplirReservoir(){
-        if (this.position.getNatureTerrain() == NatureTerrain.EAU) {
+        if (peutRemplirReservoir()) {
             this.volumeRestant=this.capaciteMax;
-        } else {
-            /* LEVER UNE EXCEPTION */
-            throw new IllegalArgumentException("le drone essaye de se remplir en dehors de l'eau");
-        }            
+        }     
     }
-   
+    
+    public void remplirReservoir(int qte){
+    	if(peutRemplirReservoir()) {
+        	if(this.volumeRestant + qte <= this.capaciteMax) {
+        		this.volumeRestant +=  qte;
+        	} else {
+        		this.volumeRestant = this.capaciteMax;
+        	}
+        } 
+    }
+    @Override
+    public boolean peutRemplirReservoir(){
+	    if (this.position.getNatureTerrain() == NatureTerrain.EAU && this.volumeRestant < this.capaciteMax) {
+	    		return true;
+	    }
+    	return false;
+    }
+    
     public String getFileOfRobot(){
     	return "images/robots/drone/";
     }

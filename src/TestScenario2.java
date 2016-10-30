@@ -14,7 +14,7 @@ import robots.*;
 
 /** Ce fichier de test sera à compléter au fur et à mesure de l'avancement de Simulateur.java **/
 
-public class TestSimulateur {
+public class TestScenario2 {
 
     public static void main(String[] args) {
         if (args.length < 1) {
@@ -26,7 +26,32 @@ public class TestSimulateur {
         	//Lecture des Données
             DonneesSimulation data = LecteurDonnees.lire(args[0], false);
             
+            //Initialisation du gestionnaire d'évenements
+            //Scenario 1
+            //Doit lever une exception!!
+            //A lever dans setPosition de robot de façon plus propre de ce qui ressort déjà
+            Robot rob = data.getListeRobots().get(1);
+            Evenement e1 = new DeplaceRobot(1, rob, Direction.NORD);
+            Evenement e2 = new VerserEau(20, rob, rob.getCapaciteMax());
+            Evenement e3 = new DeplaceRobot(40, rob, Direction.OUEST);
+            Evenement e4 = new DeplaceRobot(60, rob, Direction.OUEST);
+            Evenement e5 = new RemplirReservoir(80, rob);
+            Evenement e6 = new DeplaceRobot(100, rob, Direction.EST);
+            Evenement e7 = new DeplaceRobot(120, rob, Direction.EST);
+            Evenement e8 = new VerserEau(140, rob, rob.getCapaciteMax());
+            Evenement e9 = new ProgrammeFin(160);
+            
             GestionnaireEvents GE = new GestionnaireEvents();
+            GE.ajouteEvenement(e1);
+            GE.ajouteEvenement(e2);
+            GE.ajouteEvenement(e3);
+            GE.ajouteEvenement(e4);
+            GE.ajouteEvenement(e5);
+            GE.ajouteEvenement(e6);
+            GE.ajouteEvenement(e7);
+            GE.ajouteEvenement(e8);
+            GE.ajouteEvenement(e9);
+            
             //Lancement de la simulation
             int dimFenX = 500;
             int dimFenY = 500;

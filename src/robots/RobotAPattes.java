@@ -39,6 +39,9 @@ public class RobotAPattes extends Robot {
     public RobotAPattes(Case pos) {
         super(pos);
         this.capaciteMax = (int) Double.POSITIVE_INFINITY;
+        this.tempsRemplissageComp = 0;
+        this.interventionUnitaire = 10;
+        this.volumeRestant = this.capaciteMax;
     }
     
     @Override
@@ -46,6 +49,14 @@ public class RobotAPattes extends Robot {
         /*LEVER UNE EXCEPTION "vous essayez de remplir d'eau un robot à pattes*/             
     }
     
+    public void remplirReservoir(int qte){
+        /*LEVER UNE EXCEPTION "vous essayez de remplir d'eau un robot à pattes*/             
+    }
+    
+    @Override
+    public boolean peutRemplirReservoir(){
+    	return false;
+    }
     public String getFileOfRobot(){
     	return "images/robots/pattes/";
     }

@@ -31,9 +31,13 @@ public abstract class Robot {
     
     static protected DonneesSimulation donnees ;
 
-    protected boolean occupe; //indique si le robot est occupé à se deplacer, eteindre un incendie, ou remplir son reservoir.
+    protected Action action = Action.INNOCUPE; //indique si le robot est pas occupé (0), occupé à se deplacer (1), occupé à remplir son reservoir (2), occupé à eteindre un incendie (3); 
     
     protected Direction dir; //indique le sens de déplacement, null si ne se déplace pas
+    
+    protected int tempsRemplissageComp = 0; //en minutes;
+    
+    protected int interventionUnitaire = 0; //en litres par secondes;
     
     /* Cette fonction est à appeller dans lecteur donnée */
     static public void setDS(DonneesSimulation ds) {
@@ -51,14 +55,24 @@ public abstract class Robot {
     public Robot(Case pos) {
         this.setVitesseDefaut(-1);
         this.setPosition(pos);
-        this.occupe = false;
     }
     
     /*constructeur avec une nouvelle vitesse définie*/
     public Robot(double vitesse, Case pos) {
         this.setVitesseDefaut(vitesse);
         this.setPosition(pos);
-        this.occupe = false;
+    }
+    
+    public int getTempsRemplissageComp(){
+    	return tempsRemplissageComp;
+    }
+    
+    public int getInterventionUnitaire(){
+    	return interventionUnitaire;
+    }
+    
+    public int getCapaciteMax(){
+    	return capaciteMax;
     }
     
     public void setPosition(Case p){
@@ -88,12 +102,17 @@ public abstract class Robot {
     }
     
     
-    abstract public void remplirReservoir();
+    public abstract void remplirReservoir();
     
+    public abstract void remplirReservoir(int qte);
+    
+    public abstract boolean peutRemplirReservoir();
     
     public void deverserEau(int vol){
         Incendie incendievise = donnees.getIncendie(this.position);
-        if (vol>=this.volumeRestant && incendievise != null) {
+        System.out.println("incendievise = "+incendievise.toString());
+        System.out.println("Vol = "+vol+ " et volumeRestant = "+this.volumeRestant);
+        if (vol<=this.volumeRestant && incendievise != null) {
             this.volumeRestant -= vol;
             incendievise.eteindre(vol);
         } else {
@@ -101,6 +120,14 @@ public abstract class Robot {
         }
     }
     
+    public boolean peutDeverserEau(int vol){
+    	Incendie incendievise = donnees.getIncendie(this.position);
+    	if(incendievise != null && vol <= this.volumeRestant) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
     
     protected Direction getDirection(Case p) {
         int dif_ligne = p.getLigne()- this.getPosition().getLigne();
@@ -109,12 +136,12 @@ public abstract class Robot {
         return Direction.getDir(dif_ligne, dif_colonne);
     }
 
-    public boolean getOccupe(){
-    	return occupe;
+    public Action getAction(){
+    	return action;
     }
     
-    public void switchOccupe(){
-    	this.occupe = !this.occupe;
+    public void switchAction(Action action){
+    	this.action = action;
     }
     
     public Direction getDirection(){

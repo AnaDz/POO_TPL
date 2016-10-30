@@ -33,7 +33,6 @@ public class GestionnaireEvents {
 	}
 	
 	public void incrementeDate(){
-		//System.out.println(this.toString());
 		dateSimulation += 1;
 		Iterator<Evenement> it = listeEvenements.iterator();
 		while(it.hasNext()){
