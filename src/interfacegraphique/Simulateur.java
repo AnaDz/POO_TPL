@@ -7,11 +7,14 @@ import gui.Simulable;
 import java.awt.image.ImageObserver;
 import java.io.IOException;
 import carte.*;
-import DonneesSimulation.DonneesSimulation;
+import donneesSimulation.DonneesSimulation;
 import java.util.*;
 import evenements.*;
+import exceptions.ErreurPosition;
 import robots.*;
 import java.lang.Math;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 public class Simulateur implements Simulable {
 
     /**
@@ -87,7 +90,12 @@ public class Simulateur implements Simulable {
 	        GE.incrementeDate();
 	        drawCarte();
 	        refreshIncendies();
-	        refreshRobots();
+                /* CORRECTION AUTOMATIQUE ! A REVOIR */
+                try {
+                    refreshRobots();
+                } catch (ErreurPosition ex) {
+                    Logger.getLogger(Simulateur.class.getName()).log(Level.SEVERE, null, ex);
+                }
     	}
     	else
     		System.out.println("Simulation terminée.");
@@ -201,7 +209,7 @@ public class Simulateur implements Simulable {
     		gui.addGraphicalElement(image);
     	}
     }
-    private void refreshRobots(){
+    private void refreshRobots() throws ErreurPosition{
     //Ce refresh à lieu toutes les GestionnaireEvents.h minutes
     	Robot rob;
     	for(int i = 0; i < data.getListeRobots().size(); i++){
@@ -229,7 +237,7 @@ public class Simulateur implements Simulable {
     	}
     }
     
-    private void bougeRobot(Robot rob, int indexRob){
+    private void bougeRobot(Robot rob, int indexRob) throws ErreurPosition{
     	double vitesse = rob.getVitesse(rob.getPosition().getNatureTerrain());
     	int distanceParcourue = (int) (vitesse*GE.getPasDeTemps()*1000/60); //distance parcourue à echelle réelle
     	distanceParcourue = distanceParcourue*tailleCases/data.getCarte().getTailleCases();//distance parcourue à échelle de la carte

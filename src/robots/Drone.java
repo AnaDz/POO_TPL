@@ -5,6 +5,7 @@
  */
 package robots;
 import carte.*;
+import exceptions.ErreurPosition;
 
 /**
  *
@@ -35,7 +36,7 @@ public class Drone extends Robot {
     }
     /* Constructeurs */
     
-    public Drone(Case pos) {
+    public Drone(Case pos) throws ErreurPosition {
         super(pos); 
         this.capaciteMax = 10000;
         this.tempsRemplissageComp = 30;
@@ -43,7 +44,7 @@ public class Drone extends Robot {
         this.volumeRestant = this.capaciteMax;
     }
 
-    public Drone(double vitesse, Case pos) {
+    public Drone(double vitesse, Case pos) throws ErreurPosition {
         super(vitesse, pos);
         this.capaciteMax = 10000;
         this.tempsRemplissageComp = 30;

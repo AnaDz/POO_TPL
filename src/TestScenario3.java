@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.util.zip.DataFormatException;
 
 import carte.*;
-import DonneesSimulation.DonneesSimulation;
+import donneesSimulation.DonneesSimulation;
 import interfacegraphique.Simulateur;
 import evenements.*;
 import robots.*;

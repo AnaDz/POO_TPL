@@ -6,6 +6,7 @@
 package robots;
 
 import carte.*;
+import exceptions.ErreurPosition;
 
 
   /********************************/
@@ -38,7 +39,7 @@ public class RobotARoues extends Robot {
     
     /*Constructeurs */
     
-    public RobotARoues(Case pos) {
+    public RobotARoues(Case pos) throws ErreurPosition {
         super(pos);
         this.capaciteMax = 5000;
         this.tempsRemplissageComp = 10;
@@ -46,7 +47,7 @@ public class RobotARoues extends Robot {
         this.volumeRestant = this.capaciteMax;
     }
 
-    public RobotARoues(double vitesse, Case pos) {
+    public RobotARoues(double vitesse, Case pos) throws ErreurPosition {
         super(vitesse, pos);
         this.capaciteMax = 5000;
         this.tempsRemplissageComp = 10;

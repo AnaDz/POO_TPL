@@ -5,7 +5,8 @@
  */
 package robots;
 import carte.*;
-import DonneesSimulation.DonneesSimulation;
+import donneesSimulation.DonneesSimulation;
+import exceptions.*;
 
 /**
  *
@@ -52,13 +53,13 @@ public abstract class Robot {
 
 
     /*constructeur qui ne modifie pas la vitesse par défaut*/
-    public Robot(Case pos) {
+    public Robot(Case pos) throws ErreurPosition {
         this.setVitesseDefaut(-1);
         this.setPosition(pos);
     }
     
     /*constructeur avec une nouvelle vitesse définie*/
-    public Robot(double vitesse, Case pos) {
+    public Robot(double vitesse, Case pos) throws ErreurPosition {
         this.setVitesseDefaut(vitesse);
         this.setPosition(pos);
     }
@@ -75,7 +76,7 @@ public abstract class Robot {
     	return capaciteMax;
     }
     
-    public void setPosition(Case p){
+    public void setPosition(Case p) throws ErreurPosition{
         /* TODO vérifier que case dans carte */
         if (this.position == null) {
             this.position = p;
@@ -86,9 +87,10 @@ public abstract class Robot {
             if(vitesse != 0 && dir != null && donnees.getCarte().voisinExiste(p, dir)) {
                 this.position = p;
             } else {
-                /*exception*/
+                throw new ErreurPosition("Le robot en position " + this.position.toString() + "essaye d'aller à la case" + p.toString() + "alors qu'il ne peut pas");
             }
         }
+        
     }
     
     public Case getPosition(){

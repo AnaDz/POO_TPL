@@ -1,4 +1,4 @@
-package DonneesSimulation;
+package donneesSimulation;
 import carte.*;
 import java.util.List;
 import robots.*;
