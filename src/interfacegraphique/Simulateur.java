@@ -80,6 +80,10 @@ public class Simulateur implements Simulable {
         drawListIncendies();
         
     }
+    
+    public int getTailleCase() {
+        return this.tailleCases;
+    }
 
     
 

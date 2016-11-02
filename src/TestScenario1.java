@@ -10,13 +10,14 @@ import carte.*;
 import donneesSimulation.DonneesSimulation;
 import interfacegraphique.Simulateur;
 import evenements.*;
+import exceptions.ErreurPosition;
 import robots.*;
 
 /** Ce fichier de test sera à compléter au fur et à mesure de l'avancement de Simulateur.java **/
 
 public class TestScenario1 {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ErreurPosition {
         if (args.length < 1) {
             System.out.println("Syntaxe: java TestSimulateur <nomDeFichier>");
             System.exit(1);
@@ -25,7 +26,7 @@ public class TestScenario1 {
         try {
         	//Lecture des Données
             DonneesSimulation data = LecteurDonnees.lire(args[0], false);
-            
+            Robot.setDS(data);
             //Initialisation du gestionnaire d'évenements
             //Scenario 1
             //Doit lever une exception!!
