@@ -81,7 +81,6 @@ public abstract class Robot {
     }
 
     public void setPosition(Case p) throws ErreurPosition {
-        /* TODO vérifier que case dans carte */
         if (this.position == null) {
             this.position = p;
         } else {
@@ -101,23 +100,13 @@ public abstract class Robot {
         return this.volumeRestant;
     }
 
-    public abstract void remplirReservoir();
-
+    public void setVolumeRestant(int vol) {
+    	this.volumeRestant = vol;
+    }
+    
     public abstract void remplirReservoir(int qte);
 
     public abstract boolean peutRemplirReservoir();
-
-    public void deverserEau(int vol) {
-        Incendie incendievise = donnees.getIncendie(this.position);
-        System.out.println("incendievise = " + incendievise.toString());
-        System.out.println("Vol = " + vol + " et volumeRestant = " + this.volumeRestant);
-        if (vol <= this.volumeRestant && incendievise != null) {
-            this.volumeRestant -= vol;
-            incendievise.eteindre(vol);
-        } else {
-            throw new IllegalArgumentException("Volume supérieur au volume restant ou robot n'est pas sur un incendie");
-        }
-    }
 
     public boolean peutDeverserEau(int vol) {
         Incendie incendievise = donnees.getIncendie(this.position);
@@ -125,6 +114,16 @@ public abstract class Robot {
             return true;
         } else {
             return false;
+        }
+    }
+    
+    public void deverserEau(int vol) {
+        Incendie incendievise = donnees.getIncendie(this.position);
+        if(peutDeverserEau(vol)) {
+        	this.volumeRestant -= vol;
+        	incendievise.eteindre(vol);
+        } else {
+        	throw new IllegalArgumentException("Volume supérieur au volume restant ou le robot n'est pas sur un incendie");
         }
     }
 
@@ -168,7 +167,7 @@ public abstract class Robot {
 
     @Override
     public String toString() {
-        return new String("le robot a une vitesse de " + this.getVitesse(this.getPosition().getNatureTerrain()) + "km/h et une capacité de " + this.capaciteMax + "L et une vitesse par défaut de " + this.vitesseDefaut + "km/h");
+        return new String("Le robot réalise l'action :" + this.getAction());
     }
 
     public abstract String getFileOfRobot();

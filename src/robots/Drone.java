@@ -52,13 +52,6 @@ public class Drone extends Robot {
         this.volumeRestant = this.capaciteMax;
     }
     
-    @Override
-    public void remplirReservoir(){
-        if (peutRemplirReservoir()) {
-            this.volumeRestant=this.capaciteMax;
-        }     
-    }
-    
     public void remplirReservoir(int qte){
     	if(peutRemplirReservoir()) {
         	if(this.volumeRestant + qte <= this.capaciteMax) {
@@ -72,8 +65,10 @@ public class Drone extends Robot {
     public boolean peutRemplirReservoir(){
 	    if (this.position.getNatureTerrain() == NatureTerrain.EAU && this.volumeRestant < this.capaciteMax) {
 	    		return true;
+	    } else {
+	    	System.out.println("Le robot ne peut pas remplir son réservoir.");
+	    	return false;
 	    }
-    	return false;
     }
     
     public String getFileOfRobot(){

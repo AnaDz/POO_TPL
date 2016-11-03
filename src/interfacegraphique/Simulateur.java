@@ -11,30 +11,20 @@ import evenements.*;
 import exceptions.ErreurPosition;
 import robots.*;
 import java.lang.Math;
+
 public class Simulateur implements Simulable {
 
-    /**
-     * L'interface graphique associée*
-     */
+    //L'interface graphique associée
     private GUISimulator gui;
 
-    /**
-     * Les données de la simulation*
-     */
+    //Les données de la simuluation (carte, robots, incendies)
     private DonneesSimulation data;
-    /**
-     * Le gestionnaire d'événements associé à la simulation
-     */
     
+    //Le gestionnaire d'évenements
     private GestionnaireEvents GE;
-    /**
-     * La nouvelle taille de case : en tenant compte des dimensions de la
-     * fenetre graphique *
-     */
-    private int tailleCases;
     
-    /**La liste des ImageElement associées aux incendies**/
-    private List<ImageElement> listeIncendies;
+    //La taille de cases à l'échelle du simulateur
+    private int tailleCases;
     
     private int [][] coordImageRobot;
     
@@ -42,8 +32,8 @@ public class Simulateur implements Simulable {
     
     /**Tout est ce qui est nécessaire au restart **/
     private int [][] savePosRobots;
+    private int [] saveIntensiteIncendies;
     private GestionnaireEvents GEdebut;
-    private List<Incendie> listeIncendiesSave;
     
     
     public Simulateur(GUISimulator gui, DonneesSimulation data, GestionnaireEvents GE) {
@@ -58,8 +48,6 @@ public class Simulateur implements Simulable {
         //On sauvegarde pour pouvoir restart plus tard
         save();
         
-        //listeRobots = new ArrayList<ImageElement>();
-        listeIncendies = new ArrayList<ImageElement>();
         coordImageRobot = new int[data.getListeRobots().size()][2];
         
         //On détermine la nouvelle tailleCases
@@ -89,7 +77,9 @@ public class Simulateur implements Simulable {
     
     private void save() {
     	List<Robot> listeRobots = data.getListeRobots();
-    	savePosRobots = new int [2][listeRobots.size()];
+    	List<Incendie> listeIncendies = data.getListeIncendies();
+     	savePosRobots = new int [2][listeRobots.size()];
+    	saveIntensiteIncendies = new int [listeIncendies.size()];
     	
     	//On sauvegarde la position des robots
     	for(int i = 0; i < listeRobots.size(); i++){
@@ -97,10 +87,9 @@ public class Simulateur implements Simulable {
     		savePosRobots[1][i] = listeRobots.get(i).getPosition().getColonne();
     	}
     	
-    	//On copie la liste des incendies
-    	listeIncendiesSave = new ArrayList <Incendie>();
-    	for(Incendie it : data.getListeIncendies()){
-    		listeIncendiesSave.add(it.clone());
+    	//On sauvegarde les intensités des incendies
+    	for(int i = 0; i < listeIncendies.size(); i++) {
+    		saveIntensiteIncendies[i] = listeIncendies.get(i).getNbLitres();
     	}
     	
     	//On copie la liste d'évenements
@@ -145,14 +134,17 @@ public class Simulateur implements Simulable {
     		}
     		rob.setDirection(null);
     		rob.switchAction(Action.INNOCUPE);
-    		rob.remplirReservoir();
+    		rob.setVolumeRestant(rob.getCapaciteMax());
     	}
     	
-    	data.getListeIncendies().clear();
-    	for(Incendie it : listeIncendiesSave) {
-    		data.getListeIncendies().add(it);
+    	//On remet les incendies à leur état initial
+    	List<Incendie> listeIncendies = data.getListeIncendies();
+    	
+    	for(int i = 0; i < listeIncendies.size(); i++) {
+    		listeIncendies.get(i).setNbLitres(saveIntensiteIncendies[i]);
     	}
     	
+    	//On clone la suite des evenements
     	GE = GEdebut.clone();
     	gui.reset();
     	drawCarte();
@@ -242,7 +234,6 @@ public class Simulateur implements Simulable {
         int x = inc.getCaseIncendie().getLigne() * tailleCases;
         int y = inc.getCaseIncendie().getColonne() * tailleCases;
         ImageElement image = new ImageElement(y, x, pathImage, tailleCases + 1, tailleCases + 1, null);
-        listeIncendies.add(image);
         gui.addGraphicalElement(image);
     }
 
@@ -253,14 +244,16 @@ public class Simulateur implements Simulable {
     }
     
     private void refreshIncendies(){
-    	Incendie inc;
     	int x, y;
-    	for(int i = 0; i < data.getListeIncendies().size(); i++){
-    		inc = data.getListeIncendies().get(i);
+    	for(Incendie inc : data.getListeIncendies()) {
     		x = inc.getCaseIncendie().getLigne() * tailleCases;
     		y = inc.getCaseIncendie().getColonne() * tailleCases;
-    		ImageElement image = new ImageElement(y, x, "images/fire.png", tailleCases+1, tailleCases+1, null);
-    		gui.addGraphicalElement(image);
+    		if(inc.getNbLitres() > 0) {
+    			ImageElement image = new ImageElement(y, x, "images/fire.png", tailleCases+1, tailleCases+1, null);
+        		gui.addGraphicalElement(image);
+    		} else {
+    			//On pourrait afficher de la fumée
+    		}
     	}
     }
     private void refreshRobots() throws ErreurPosition{
@@ -309,7 +302,6 @@ public class Simulateur implements Simulable {
     			int lig = rob.getPosition().getLigne();
     			int col = rob.getPosition().getColonne()+rob.getDirection().getY();
     			rob.setPosition(data.getCarte().getCase(lig, col));
-    			System.out.println(rob.getPosition().toString());
     			rob.switchAction(Action.INNOCUPE);
     		}
     		else {
@@ -326,7 +318,6 @@ public class Simulateur implements Simulable {
     			int lig = rob.getPosition().getLigne()+rob.getDirection().getX();
     			int col = rob.getPosition().getColonne();
     			rob.setPosition(data.getCarte().getCase(lig, col));
-    			System.out.println(rob.getPosition().toString());
     			rob.switchAction(Action.INNOCUPE);
     		}
     		else {
@@ -343,7 +334,7 @@ public class Simulateur implements Simulable {
     
     private void remplitReservoir(Robot rob, int indexRob, int qte){
     	String pathImage;
-    	if(rob.getDirection().toString() == null) {
+    	if(rob.getDirection() == null) {
     		pathImage = rob.getFileOfRobot() + "SUD" + indiceImage + ".png";
     	} else {
     		pathImage = rob.getFileOfRobot() + rob.getDirection().toString() + indiceImage + ".png";
@@ -369,7 +360,7 @@ public class Simulateur implements Simulable {
     
     private void verseReservoir(Robot rob, int indexRob, int qte){
     	String pathImage;
-    	if(rob.getDirection().toString() == null) {
+    	if(rob.getDirection() == null) {
     		pathImage = rob.getFileOfRobot() + "SUD" + indiceImage + ".png";
     	} else {
     		pathImage = rob.getFileOfRobot() + rob.getDirection().toString() + indiceImage + ".png";
@@ -387,13 +378,8 @@ public class Simulateur implements Simulable {
     		rob.deverserEau(qte);
     	}
     	
-    	if(rob.getVolumeRestant() <= 0){
-    		rob.switchAction(Action.INNOCUPE);
-    	}
-    	
-    	Incendie incendievise = data.getIncendie(rob.getPosition());
-    	if(incendievise.getNbLitres() <= 0) {
-    		data.getListeIncendies().remove(incendievise);
+    	//Si le reservoir du robot est vide ou que l'incendie est éteint, alors il devient innocupé
+    	if(rob.getVolumeRestant() <= 0 || data.getIncendie(rob.getPosition()).getNbLitres() <= 0){
     		rob.switchAction(Action.INNOCUPE);
     	}
     }

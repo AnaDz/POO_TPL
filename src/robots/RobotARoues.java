@@ -55,12 +55,6 @@ public class RobotARoues extends Robot {
         this.volumeRestant = this.capaciteMax;
     }
     
-    @Override
-    public void remplirReservoir(){
-        if(peutRemplirReservoir())
-        	this.volumeRestant = this.capaciteMax;
-    }
-    
     public void remplirReservoir(int qte){
         if(peutRemplirReservoir()) {
         	if(this.volumeRestant + qte <= this.capaciteMax) {

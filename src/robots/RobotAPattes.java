@@ -45,11 +45,6 @@ public class RobotAPattes extends Robot {
         this.volumeRestant = this.capaciteMax;
     }
     
-    @Override
-    public void remplirReservoir(){
-        /*LEVER UNE EXCEPTION "vous essayez de remplir d'eau un robot à pattes*/             
-    }
-    
     public void remplirReservoir(int qte){
         /*LEVER UNE EXCEPTION "vous essayez de remplir d'eau un robot à pattes*/             
     }

@@ -51,30 +51,26 @@ public class TestScenario3{
             Evenement e12 = new DeplaceRobot(300, rob3, Direction.SUD);
             
             Evenement e13 = new ProgrammeFin(400);
-            GestionnaireEvents gE = new GestionnaireEvents();
-            gE.ajouteEvenement(e1);
-            gE.ajouteEvenement(e2);
-            gE.ajouteEvenement(e3);
-            gE.ajouteEvenement(e4);
-            gE.ajouteEvenement(e5);
-            gE.ajouteEvenement(e6);
-            gE.ajouteEvenement(e7);
-            gE.ajouteEvenement(e8);
-            gE.ajouteEvenement(e8);
-            gE.ajouteEvenement(e9);
-            gE.ajouteEvenement(e10);
-            gE.ajouteEvenement(e11);
-            gE.ajouteEvenement(e12);
-            gE.ajouteEvenement(e13);
+            GestionnaireEvents GE = new GestionnaireEvents();
+            GE.ajouteEvenement(e1);
+            GE.ajouteEvenement(e2);
+            GE.ajouteEvenement(e3);
+            GE.ajouteEvenement(e4);
+            GE.ajouteEvenement(e5);
+            GE.ajouteEvenement(e6);
+            GE.ajouteEvenement(e7);
+            GE.ajouteEvenement(e8);
+            GE.ajouteEvenement(e9);
+            GE.ajouteEvenement(e10);
+            GE.ajouteEvenement(e11);
+            GE.ajouteEvenement(e12);
+            GE.ajouteEvenement(e13);
             
             //Lancement de la simulation
             int dimFenX = 500;
             int dimFenY = 500;
             GUISimulator gui = new GUISimulator(dimFenX, dimFenY, Color.BLACK);
-            Simulateur sim = new Simulateur(gui, data, gE);
-            
-            
-            
+            Simulateur sim = new Simulateur(gui, data, GE);
             
         } catch (FileNotFoundException e) {
             System.out.println("fichier " + args[0] + " inconnu ou illisible");

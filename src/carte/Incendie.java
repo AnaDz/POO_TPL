@@ -1,6 +1,6 @@
 package carte;
 
-public class Incendie implements Cloneable{
+public class Incendie{
 	private Case caseIncendie;
 	private int nbLitres;
 	
@@ -16,7 +16,11 @@ public class Incendie implements Cloneable{
 	public int getNbLitres(){
 		return nbLitres;
 	}
-        
+    
+	public void setNbLitres(int nbLitres){
+		this.nbLitres = nbLitres;
+	}
+	
     public void eteindre(int vol) {
         this.nbLitres -= vol;
     }
@@ -24,16 +28,5 @@ public class Incendie implements Cloneable{
     @Override
     public String toString() {
     	return "Incendie en position "+caseIncendie.toString()+" d'intensité "+nbLitres;
-    }
-    
-    @Override
-    public Incendie clone() {
-    	Incendie copie = null;
-    	try {
-    		copie = (Incendie)super.clone();
-    	} catch(CloneNotSupportedException cnse) {
-    		cnse.printStackTrace(System.err);
-    	}
-    	return copie;
     }
 }
