@@ -87,23 +87,9 @@ public abstract class Robot {
         } else {
             NatureTerrain nat = p.getNatureTerrain();
             double vitesse = this.getVitesse(nat);
-            Direction dir = this.getDirection(p);
-            if ((p.getColonne() < donnees.getCarte().getNbColonnes()) && (p.getLigne() < donnees.getCarte().getNbLignes())) {
-                if (vitesse != 0) {
-                    if (this.getDirection(p) != null && donnees.getCarte().voisinExiste(p, this.getDirection(p))) {
-                        this.position = p;
-                    } else {
-                        throw new ErreurPosition("La case demandée n'est pas voisin du robot en position" + this.position.toString());
-                    }
-
-                } else {
-                    throw new ErreurPosition("Le robot en position" + this.position.toString() + "essaye d'aller sur un terrain qui n'est pas le sien (" + p.getNatureTerrain() + ")");
-                }
-
-            } else {
-                throw new ErreurPosition("On veut déplacer un robot dans une case qui n'existe pas sur la carte");
-            }
-
+            if ((p.getColonne() < donnees.getCarte().getNbColonnes()) && (p.getLigne() < donnees.getCarte().getNbLignes()) && vitesse != 0) {
+            	this.position = p;
+            }   
         }
     }
 

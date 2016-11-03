@@ -3,8 +3,11 @@ package evenements;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 
+import donneesSimulation.DonneesSimulation;
+import robots.Robot;
 
-public class GestionnaireEvents {
+
+public class GestionnaireEvents implements Cloneable{
 
 	//Date courante de la simulation
 	private long dateSimulation;
@@ -58,6 +61,7 @@ public class GestionnaireEvents {
 		return listeEvenements;
 	}
 	
+	@Override
 	public String toString(){
 		Iterator<Evenement> it = listeEvenements.iterator();
 		String res = "";
@@ -65,6 +69,22 @@ public class GestionnaireEvents {
 			res += it.next().toString();
 		}
 		return res;
+	}
+	
+	@Override
+	public GestionnaireEvents clone() {
+		GestionnaireEvents copie = null;
+		try{
+    		copie = (GestionnaireEvents)super.clone();
+    	} catch (CloneNotSupportedException cnse) {
+    		cnse.printStackTrace(System.err);
+    	}
+		Iterator<Evenement> iteve = this.listeEvenements.iterator();
+		copie.listeEvenements = new PriorityQueue<Evenement>();
+		while(iteve.hasNext()){
+			copie.listeEvenements.add(iteve.next().clone());
+		}
+		return copie;
 	}
 
 }

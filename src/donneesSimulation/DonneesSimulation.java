@@ -1,5 +1,6 @@
 package donneesSimulation;
 import carte.*;
+
 import java.util.List;
 import robots.*;
 
@@ -12,8 +13,8 @@ public class DonneesSimulation {
 		this.carte = carte; 
 		this.listeIncendies = listeIncendies;
 		this.listeRobots = listeRobots;
-                //On n'oublie pas de donner les données à nos robots.
-                Robot.setDS(this);
+        //On n'oublie pas de donner les données à nos robots.
+        Robot.setDS(this);
 	}
 	
 	//Accesseurs
@@ -38,4 +39,5 @@ public class DonneesSimulation {
         }
         return null;
     }
+    
 }

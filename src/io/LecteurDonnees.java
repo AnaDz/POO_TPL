@@ -63,7 +63,7 @@ public class LecteurDonnees {
         scanner.close();
         
         if(modeverbeux){
-        System.out.println("\n == Lecture terminee");
+        	System.out.println("\n == Lecture terminee");
         }
         return res;
     }

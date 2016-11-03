@@ -1,6 +1,7 @@
 package evenements;
 
-public abstract class Evenement implements Comparable<Evenement> {
+
+public abstract class Evenement implements Comparable<Evenement>, Cloneable {
 
 	private long date;
 	
@@ -27,5 +28,16 @@ public abstract class Evenement implements Comparable<Evenement> {
 			return 0;
 		else
 			return 1;
+	}
+	
+	//On réalise l'interface Cloneable
+	public Evenement clone() {
+		Evenement copie = null;
+		try {
+    		copie = (Evenement)super.clone();
+    	} catch(CloneNotSupportedException cnse) {
+    		cnse.printStackTrace(System.err);
+    	}
+    	return copie;
 	}
 }

@@ -23,9 +23,8 @@ public class DeplaceRobot extends Evenement {
 		}
 	}
 	
+	@Override
 	public String toString(){
 		return super.toString()+" : Le robot en position "+rob.getPosition().toString()+" se déplace vers le "+dir.toString()+"\n";
 	}
-	
-	
 }

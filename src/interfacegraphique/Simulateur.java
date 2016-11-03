@@ -3,8 +3,6 @@ package interfacegraphique;
 import gui.GUISimulator;
 import gui.ImageElement;
 import gui.Simulable;
-
-import java.awt.image.ImageObserver;
 import java.io.IOException;
 import carte.*;
 import donneesSimulation.DonneesSimulation;
@@ -13,8 +11,6 @@ import evenements.*;
 import exceptions.ErreurPosition;
 import robots.*;
 import java.lang.Math;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 public class Simulateur implements Simulable {
 
     /**
@@ -26,7 +22,6 @@ public class Simulateur implements Simulable {
      * Les données de la simulation*
      */
     private DonneesSimulation data;
-    
     /**
      * Le gestionnaire d'événements associé à la simulation
      */
@@ -45,13 +40,24 @@ public class Simulateur implements Simulable {
     
     private int indiceImage = 0;
     
+    /**Tout est ce qui est nécessaire au restart **/
+    private int [][] savePosRobots;
+    private GestionnaireEvents GEdebut;
+    private List<Incendie> listeIncendiesSave;
+    
+    
     public Simulateur(GUISimulator gui, DonneesSimulation data, GestionnaireEvents GE) {
         //On instancie les attributs
         this.gui = gui;
         gui.setSimulable(this);
         this.data = data;
         Carte carte = data.getCarte();
+        
         this.GE = GE;
+        
+        //On sauvegarde pour pouvoir restart plus tard
+        save();
+        
         //listeRobots = new ArrayList<ImageElement>();
         listeIncendies = new ArrayList<ImageElement>();
         coordImageRobot = new int[data.getListeRobots().size()][2];
@@ -81,6 +87,26 @@ public class Simulateur implements Simulable {
         
     }
     
+    private void save() {
+    	List<Robot> listeRobots = data.getListeRobots();
+    	savePosRobots = new int [2][listeRobots.size()];
+    	
+    	//On sauvegarde la position des robots
+    	for(int i = 0; i < listeRobots.size(); i++){
+    		savePosRobots[0][i] = listeRobots.get(i).getPosition().getLigne();
+    		savePosRobots[1][i] = listeRobots.get(i).getPosition().getColonne();
+    	}
+    	
+    	//On copie la liste des incendies
+    	listeIncendiesSave = new ArrayList <Incendie>();
+    	for(Incendie it : data.getListeIncendies()){
+    		listeIncendiesSave.add(it.clone());
+    	}
+    	
+    	//On copie la liste d'évenements
+    	this.GEdebut = GE.clone();
+    }
+    
     public int getTailleCase() {
         return this.tailleCases;
     }
@@ -94,12 +120,12 @@ public class Simulateur implements Simulable {
 	        GE.incrementeDate();
 	        drawCarte();
 	        refreshIncendies();
-                /* CORRECTION AUTOMATIQUE ! A REVOIR */
-                try {
-                    refreshRobots();
-                } catch (ErreurPosition ex) {
-                    Logger.getLogger(Simulateur.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            try {
+                refreshRobots();
+            } catch (ErreurPosition ex) {
+                System.out.println("Un robot est sorti de la carte. Arrêt prématuré de la simulation.");
+                restart();
+            }
     	}
     	else
     		System.out.println("Simulation terminée.");
@@ -107,7 +133,31 @@ public class Simulateur implements Simulable {
 
     @Override
     public void restart() {
-        //a implementer
+    	//On remet les robots à leur état initial
+    	List<Robot> listeRobots = data.getListeRobots();
+    	Robot rob;
+    	for(int i = 0; i < listeRobots.size(); i++) {
+    		rob = listeRobots.get(i);
+    		try {
+    			rob.setPosition(data.getCarte().getCase(savePosRobots[0][i], savePosRobots[1][i]));
+    		} catch(ErreurPosition ep) {
+    			System.out.println(ep);
+    		}
+    		rob.setDirection(null);
+    		rob.switchAction(Action.INNOCUPE);
+    		rob.remplirReservoir();
+    	}
+    	
+    	data.getListeIncendies().clear();
+    	for(Incendie it : listeIncendiesSave) {
+    		data.getListeIncendies().add(it);
+    	}
+    	
+    	GE = GEdebut.clone();
+    	gui.reset();
+    	drawCarte();
+        drawListRobots();
+        drawListIncendies();
     }
 
     /**
@@ -259,6 +309,7 @@ public class Simulateur implements Simulable {
     			int lig = rob.getPosition().getLigne();
     			int col = rob.getPosition().getColonne()+rob.getDirection().getY();
     			rob.setPosition(data.getCarte().getCase(lig, col));
+    			System.out.println(rob.getPosition().toString());
     			rob.switchAction(Action.INNOCUPE);
     		}
     		else {
@@ -275,6 +326,7 @@ public class Simulateur implements Simulable {
     			int lig = rob.getPosition().getLigne()+rob.getDirection().getX();
     			int col = rob.getPosition().getColonne();
     			rob.setPosition(data.getCarte().getCase(lig, col));
+    			System.out.println(rob.getPosition().toString());
     			rob.switchAction(Action.INNOCUPE);
     		}
     		else {
