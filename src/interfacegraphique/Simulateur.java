@@ -7,7 +7,6 @@ import carte.*;
 import donneesSimulation.DonneesSimulation;
 import java.util.*;
 import evenements.*;
-import exceptions.ErreurPosition;
 import robots.*;
 import java.lang.Math;
 
@@ -103,11 +102,7 @@ public class Simulateur implements Simulable {
         drawCarte();
 
         //On dessine les robots
-        try{
-    		refreshRobots();
-    	} catch(ErreurPosition ep) {
-    		System.out.println(ep);
-    	}	
+    	refreshRobots();
   
 
         //On dessine les incencies
@@ -159,12 +154,7 @@ public class Simulateur implements Simulable {
 	        GE.incrementeDate();
 	        drawCarte();
 	        refreshIncendies();
-            try {
-                refreshRobots();
-            } catch (ErreurPosition ex) {
-                System.out.println("Un robot est sorti de la carte. Arrêt prématuré de la simulation.");
-                //Arrêter la sim
-            }
+            refreshRobots();
     	}
     	else
     		System.out.println("Simulation terminée.");
@@ -180,11 +170,8 @@ public class Simulateur implements Simulable {
     	Robot rob;
     	for(int i = 0; i < listeRobots.size(); i++) {
     		rob = listeRobots.get(i);
-    		try {
-    			rob.setPosition(data.getCarte().getCase(savePosRobots[0][i], savePosRobots[1][i]));
-    		} catch(ErreurPosition ep) {
-    			System.out.println(ep);
-    		}
+    		rob.setPosition(data.getCarte().getCase(savePosRobots[0][i], savePosRobots[1][i]));
+    		
     		rob.setDirection(null);
     		rob.switchAction(Action.INNOCUPE);
     		rob.setVolumeRestant(rob.getCapaciteMax());
@@ -201,11 +188,7 @@ public class Simulateur implements Simulable {
     	GE = GEdebut.clone();
     	gui.reset();
     	drawCarte();
-    	try{
-    		refreshRobots();
-    	} catch(ErreurPosition ep) {
-    		System.out.println(ep);
-    	}
+    	refreshRobots();
         refreshIncendies();
     }
 
@@ -317,7 +300,7 @@ public class Simulateur implements Simulable {
     /**
      * Rafraichit les robots en fonction de leur ACTION courante. Appelée à chaque next().
      */
-    private void refreshRobots() throws ErreurPosition{
+    private void refreshRobots() {
     	Robot rob;
     	for(int i = 0; i < data.getListeRobots().size(); i++){
     		rob = data.getListeRobots().get(i);
@@ -348,7 +331,7 @@ public class Simulateur implements Simulable {
      * @param rob le robot a déplacer.
      * @param indexRob la position du robot dans data.ListeRobots
      */
-    private void bougeRobot(Robot rob, int indexRob) throws ErreurPosition{
+    private void bougeRobot(Robot rob, int indexRob) {
     	double vitesse = rob.getVitesse(rob.getPosition().getNatureTerrain());
     	int distanceParcourue = (int) (vitesse*GE.getPasDeTemps()*1000/60); //distance parcourue à echelle réelle
     	int depX = coordRobot[indexRob][0];

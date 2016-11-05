@@ -5,7 +5,6 @@ import evenements.DeplaceRobot;
 import evenements.Evenement;
 import evenements.GestionnaireEvents;
 import evenements.ProgrammeFin;
-import exceptions.ErreurPosition;
 import gui.GUISimulator;
 import interfacegraphique.Simulateur;
 import io.LecteurDonnees;
@@ -29,7 +28,7 @@ public class TestScenarioErreurPosition {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws ErreurPosition {
+    public static void main(String[] args) {
                 if (args.length < 1) {
             System.out.println("Syntaxe: java TestSimulateur <nomDeFichier>");
             System.exit(1);

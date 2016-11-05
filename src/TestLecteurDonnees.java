@@ -5,12 +5,11 @@ import java.io.FileNotFoundException;
 import java.util.zip.DataFormatException;
 import donneesSimulation.DonneesSimulation;
 import carte.*;
-import exceptions.ErreurPosition;
 import robots.*;
 
 public class TestLecteurDonnees {
 
-    public static void main(String[] args) throws ErreurPosition {
+    public static void main(String[] args) {
         if (args.length < 1) {
             System.out.println("Syntaxe: java TestLecteurDonnees <nomDeFichier>");
             System.exit(1);

@@ -5,7 +5,6 @@
  */
 package robots;
 import carte.*;
-import exceptions.ErreurPosition;
 
 /**
  *
@@ -37,7 +36,7 @@ public class RobotAPattes extends Robot {
     
     /* constructeur */
     
-    public RobotAPattes(Case pos) throws ErreurPosition {
+    public RobotAPattes(Case pos) {
         super(pos);
         this.capaciteMax = (int) Double.POSITIVE_INFINITY;
         this.tempsRemplissageComp = 0;

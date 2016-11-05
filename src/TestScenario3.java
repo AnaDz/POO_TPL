@@ -10,14 +10,13 @@ import carte.*;
 import donneesSimulation.DonneesSimulation;
 import interfacegraphique.Simulateur;
 import evenements.*;
-import exceptions.ErreurPosition;
 import robots.*;
 
 /** Ce fichier de test sera à compléter au fur et à mesure de l'avancement de Simulateur.java **/
 
 public class TestScenario3{
 
-    public static void main(String[] args) throws ErreurPosition {
+    public static void main(String[] args) {
         if (args.length < 1) {
             System.out.println("Syntaxe: java TestSimulateur <nomDeFichier>");
             System.exit(1);

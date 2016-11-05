@@ -14,7 +14,6 @@ public class DeplaceRobot extends Evenement {
 	}
 	
 	public void execute(){
-		System.out.println("ACTION = " + rob.getAction());
 		if(rob.getAction() == Action.INNOCUPE){
 			rob.setDirection(dir);
 			rob.switchAction(Action.DEPLACE);

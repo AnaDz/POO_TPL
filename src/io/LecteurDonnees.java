@@ -2,7 +2,6 @@ package io;
 
 import donneesSimulation.DonneesSimulation;
 import carte.*;
-import exceptions.ErreurPosition;
 import robots.*;
 import java.io.*;
 import java.util.*;
@@ -49,7 +48,7 @@ public class LecteurDonnees {
      */
 	
 	public static DonneesSimulation lire(String fichierDonnees, Boolean modeverb)
-        throws FileNotFoundException, DataFormatException, ErreurPosition {
+        throws FileNotFoundException, DataFormatException {
 		modeverbeux = modeverb;
 		if(modeverbeux){
 			System.out.println("\n == Lecture du fichier" + fichierDonnees);
@@ -213,7 +212,7 @@ public class LecteurDonnees {
     /**
      * Lit et affiche les donnees des robots.
      */
-    private void lireRobots() throws DataFormatException, ErreurPosition {
+    private void lireRobots() throws DataFormatException {
         ignorerCommentaires();
         
         try {
@@ -237,7 +236,7 @@ public class LecteurDonnees {
      * Lit et affiche les donnees du i-eme robot.
      * @param i
      */
-    private void lireRobot(int i) throws DataFormatException, ErreurPosition {
+    private void lireRobot(int i) throws DataFormatException {
         ignorerCommentaires();
         
         if(modeverbeux){

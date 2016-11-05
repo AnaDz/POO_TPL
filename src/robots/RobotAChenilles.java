@@ -5,7 +5,6 @@
  */
 package robots;
 import carte.*;
-import exceptions.ErreurPosition;
 
 /**
  *
@@ -45,7 +44,7 @@ public class RobotAChenilles extends Robot {
     
     /* constructeurs */
 
-    public RobotAChenilles(Case pos) throws ErreurPosition {
+    public RobotAChenilles(Case pos) {
         super(pos);
         this.capaciteMax = 2000;
         this.tempsRemplissageComp = 5;
@@ -53,7 +52,7 @@ public class RobotAChenilles extends Robot {
         this.volumeRestant = this.capaciteMax;
     }
 
-    public RobotAChenilles(Case pos, double vitesse) throws ErreurPosition {
+    public RobotAChenilles(Case pos, double vitesse) {
         this(pos);
         setVitesseDefaut(vitesse);
     }

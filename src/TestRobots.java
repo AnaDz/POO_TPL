@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 import carte.*;
-import exceptions.ErreurPosition;
 import robots.*;
 
 
@@ -18,7 +17,7 @@ public class TestRobots {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws ErreurPosition {
+    public static void main(String[] args) {
         
         /* Principe du test : On teste chaque robot sur différents terrains avec différentes vitesses.
         * les parties commentées génèrent des exceptions*/

@@ -26,11 +26,23 @@ public class Carte {
 	}
 	
 	public Case getCase(int lig, int col){
-		return carte[lig][col];
+		Case res = null;
+		try {
+			res = carte[lig][col];
+		} catch(ArrayIndexOutOfBoundsException ep) {
+			System.out.println("Vous essayez d'accéder à la case ("+lig+","+col+") qui n'existe pas.\nArrêt de la simulation");
+			System.exit(0);
+		}
+		return res;
 	}
 	
 	public void setCase(int lig, int col, Case c){
-		carte[lig][col] = c;
+		try {
+			carte[lig][col] = c;
+		} catch(ArrayIndexOutOfBoundsException ep) {
+			System.out.println("Vous essayez de modifier la case ("+lig+","+col+") qui n'existe pas.\nArrêt de la simulation");
+			System.exit(0);
+		}
 	}
 	
 	public boolean voisinExiste(Case src, Direction dir){
@@ -42,7 +54,6 @@ public class Carte {
 			return (getCase(src.getLigne()+dir.getX(),src.getColonne()+dir.getY()));
 		else
 			return null;
-		// Ne pas oublier de lever exception
 	}
 }
 

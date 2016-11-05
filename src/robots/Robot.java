@@ -7,7 +7,6 @@ package robots;
 
 import carte.*;
 import donneesSimulation.DonneesSimulation;
-import exceptions.*;
 
 /**
  * Classe mère : Robot
@@ -39,7 +38,7 @@ public abstract class Robot {
      * @param pos	la position de départ du robot
      * @throws ErreurPosition
      */
-    public Robot(Case pos) throws ErreurPosition {
+    public Robot(Case pos) {
         setVitesseDefaut(-1);
         position = pos;
     }
@@ -50,7 +49,7 @@ public abstract class Robot {
      * @param pos		la position de départ du Robot
      * @throws ErreurPosition
      */
-    public Robot(double vitesse, Case pos) throws ErreurPosition {
+    public Robot(double vitesse, Case pos) {
         vitesseDefaut = vitesse;
         position = pos;
     }
@@ -140,9 +139,6 @@ public abstract class Robot {
         int DistanceTotale = donnees.getCarte().getTailleCases();
         int DistanceParcourue = (int) (this.getVitesse(nature) * h * 1000 / 60);
         double duree = DistanceTotale/DistanceParcourue;
-        System.out.println("Dist tot = "+DistanceTotale);
-        System.out.println("Dist parc ="+DistanceParcourue);
-        System.out.println(duree);
         return (int) duree+1;
     }
     /**
@@ -171,17 +167,20 @@ public abstract class Robot {
     /**
      * Déplace le robot
      * @param p		la nouvelle position du robot
-     * @throws ErreurPosition
      */
-    public void setPosition(Case p) throws ErreurPosition {
-        if (this.position == null) {
-            this.position = p;
-        } else {
-            NatureTerrain nat = p.getNatureTerrain();
+    public void setPosition(Case p) {
+        try {
+        	NatureTerrain nat = p.getNatureTerrain();
             double vitesse = this.getVitesse(nat);
-            if ((p.getColonne() < donnees.getCarte().getNbColonnes()) && (p.getLigne() < donnees.getCarte().getNbLignes()) && vitesse != 0) {
+            if(vitesse != 0) {
             	this.position = p;
-            }   
+            } else {
+            	System.out.println("Le robot en position "+position.toString()+" essaye d'aller en "+p.toString()+" alors qu'il ne peut pas.");
+            	System.exit(0);
+            }
+        } catch (ArrayIndexOutOfBoundsException exc) {
+        	System.out.println("Le robot en position "+position.toString()+ "essaye de se déplacer en "+p.toString());
+        	System.exit(0);
         }
     }
 

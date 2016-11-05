@@ -5,7 +5,6 @@ import evenements.DeplaceRobot;
 import evenements.Evenement;
 import evenements.GestionnaireEvents;
 import evenements.ProgrammeFin;
-import exceptions.ErreurPosition;
 import gui.GUISimulator;
 import interfacegraphique.Simulateur;
 import io.LecteurDonnees;
@@ -15,7 +14,7 @@ import java.util.zip.DataFormatException;
 
 public class TestVitesse {
 
-    public static void main(String[] args) throws ErreurPosition {
+    public static void main(String[] args) {
         if (args.length < 1) {
             System.out.println("Syntaxe: java TestSimulateur <nomDeFichier>");
             System.exit(1);
