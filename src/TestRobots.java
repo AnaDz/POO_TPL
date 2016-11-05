@@ -35,7 +35,7 @@ public class TestRobots {
         
         
         Drone d1 = new Drone(foret);
-        Drone d2 = new Drone(115, eau);
+        Drone d2 = new Drone(eau, 115);
         
         System.out.println("pour d1 "+d1.toString());
         System.out.println("pour d2 " + d2.toString());
@@ -47,7 +47,7 @@ public class TestRobots {
         
         RobotARoues r1 = new RobotARoues(libre);
         //RobotARoues r2 = new RobotARoues(100, foret);
-        RobotARoues r2 = new RobotARoues(100, habitat);
+        RobotARoues r2 = new RobotARoues(habitat, 100);
        
        System.out.println("pour r1 " + r1.toString() );
        System.out.println("pour r2 " + r2.toString() );
@@ -59,7 +59,7 @@ public class TestRobots {
        
        RobotAChenilles r3 = new RobotAChenilles(libre);
        //RobotAChenilles r4 = new RobotAChenilles(50, eau);
-       RobotAChenilles r4 = new RobotAChenilles(50, foret);
+       RobotAChenilles r4 = new RobotAChenilles(foret, 50);
        System.out.println("pour r3 " + r3.toString() );
        System.out.println("pour r4 " + r4.toString() );
 

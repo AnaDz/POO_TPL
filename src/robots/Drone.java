@@ -7,12 +7,6 @@ package robots;
 import carte.*;
 import exceptions.ErreurPosition;
 
-/**
- *
- * @author skip
- */
-
-
   /************************/
  /* CLASSE FILLE : DRONE */
 /************************/
@@ -44,12 +38,9 @@ public class Drone extends Robot {
         this.volumeRestant = this.capaciteMax;
     }
 
-    public Drone(double vitesse, Case pos) throws ErreurPosition {
-        super(vitesse, pos);
-        this.capaciteMax = 10000;
-        this.tempsRemplissageComp = 30;
-        this.interventionUnitaire = (int) (10000/30) + 1;
-        this.volumeRestant = this.capaciteMax;
+    public Drone(Case pos, double vitesse) throws ErreurPosition {
+    	this(pos);
+        setVitesseDefaut(vitesse);
     }
     
     public void remplirReservoir(int qte){

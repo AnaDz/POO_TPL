@@ -47,12 +47,9 @@ public class RobotARoues extends Robot {
         this.volumeRestant = this.capaciteMax;
     }
 
-    public RobotARoues(double vitesse, Case pos) throws ErreurPosition {
-        super(vitesse, pos);
-        this.capaciteMax = 5000;
-        this.tempsRemplissageComp = 10;
-        this.interventionUnitaire = 20;
-        this.volumeRestant = this.capaciteMax;
+    public RobotARoues(Case pos, double vitesse) throws ErreurPosition {
+        this(pos);
+        setVitesseDefaut(vitesse);
     }
     
     public void remplirReservoir(int qte){

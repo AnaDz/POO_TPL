@@ -8,78 +8,171 @@ package robots;
 import carte.*;
 import donneesSimulation.DonneesSimulation;
 import exceptions.*;
-import evenements.*;
-import interfacegraphique.*;
 
 /**
- *
- * @author skip
+ * Classe mère : Robot
  */
 
-/* ce qui est a traiter :  Temps remplir et vider */
-/**
- * ********************
- */
-/* CLASSE MERE : ROBOT */
-/**
- * ********************
- */
 public abstract class Robot {
 
-    protected double vitesseDefaut = 0;
-
-    protected Case position;
-
-    protected int capaciteMax = 0;
-
-    protected int volumeRestant = 0;
 
     static protected DonneesSimulation donnees;
+    
+    protected Case position;
+    protected Action action = Action.INNOCUPE;
+    
+    protected double vitesseDefaut = 0;
+    protected Direction dir;
 
-    protected Action action = Action.INNOCUPE; //indique si le robot est pas occupé (0), occupé à se deplacer (1), occupé à remplir son reservoir (2), occupé à eteindre un incendie (3); 
-
-    protected Direction dir; //indique le sens de déplacement, null si ne se déplace pas
-
-    protected int tempsRemplissageComp = 0; //en minutes;
-
-    protected int interventionUnitaire = 0; //en litres par secondes;
-
-    /* Cette fonction est à appeller dans lecteur donnée */
-    static public void setDS(DonneesSimulation ds) {
-        donnees = ds;
-    }
-
-    abstract protected void setVitesseDefaut(double v);
-
-    /* de base, dès qu'on modifie la position on modifie la vitesse en conséquence*/
-
-    abstract public double getVitesse(NatureTerrain nature);
-
-
-    /*constructeur qui ne modifie pas la vitesse par défaut*/
+    protected int capaciteMax = 0;
+    protected int volumeRestant = 0;
+    protected int tempsRemplissageComp = 0;
+    protected int interventionUnitaire = 0;
+    
+    
+    /*******************************
+     	CONSTRUCTEURS
+     *******************************/
+    
+    /**
+     * Construit une instance de la classe Robot en conservant la vitesse par défaut
+     * @param pos	la position de départ du robot
+     * @throws ErreurPosition
+     */
     public Robot(Case pos) throws ErreurPosition {
-        this.setVitesseDefaut(-1);
-        this.setPosition(pos);
+        setVitesseDefaut(-1);
+        position = pos;
     }
 
-    /*constructeur avec une nouvelle vitesse définie*/
+    /**
+     * Construit une instance de la classe Robot en modifiant la vitesse par défaut.
+     * @param vitesse	la nouvelle vitesse
+     * @param pos		la position de départ du Robot
+     * @throws ErreurPosition
+     */
     public Robot(double vitesse, Case pos) throws ErreurPosition {
-        this.setVitesseDefaut(vitesse);
-        this.setPosition(pos);
+        vitesseDefaut = vitesse;
+        position = pos;
     }
-
+    
+    /********************************
+     		ACCESSEURS
+     *******************************/
+    
+    /**
+     * Retourne la case sur laquelle est le robot.
+     */
+    public Case getPosition() {
+        return position;
+    }
+    
+    /**
+     * Retourne l'action qu'est en train d'effectuer le robot.
+     * @return INNOCUPE ou DEPLACE ou REMPLIR ou VERSER
+     */
+    public Action getAction() {
+        return action;
+    }
+    
+    /**
+     * Retourne la vitesse du robot en fonction d'une nature de terrain
+     * @param nature	la nature du terrain
+     * @return			la vitesse du robot sur une case de type nature.
+     */
+    public abstract double getVitesse(NatureTerrain nature);
+    
+    /**
+     * Retourne la direction vers laquelle se déplace le robot. Null si ne se déplace pas.
+     * @return		NORD ou SUD ou EST ou OUEST ou NULL
+     */
+    public Direction getDirection() {
+        return dir;
+    }
+    
+    /**
+     * Retourne la capacité maximale du reservoir du robot
+     */
+    public int getCapaciteMax() {
+        return capaciteMax;
+    }
+    
+    /**
+     * Retourne le volume contenu dans le réservoir du robot
+     */
+    public int getVolumeRestant() {
+        return this.volumeRestant;
+    }
+    
+    /**
+     * Retourne le temps nécessaire au robot pour remplir son réservoir de 0 à sa capacité maximale
+     */
     public int getTempsRemplissageComp() {
         return tempsRemplissageComp;
     }
 
+    /**
+     * Retourne le nombre de litres par seconde que peut verser le robot
+     */
     public int getInterventionUnitaire() {
         return interventionUnitaire;
     }
 
-    public int getCapaciteMax() {
-        return capaciteMax;
+    /**
+     * Retourne la direction de la case passée en paramètre par rapport à la case courante.
+     * @param p 	la case voisine à la case courante
+     * @return		NORD ou SUD ou OUEST ou EST
+     */
+    //Que se passe-t-il si la case n'est pas voisine ?
+    protected Direction getDirection(Case p) {
+        int dif_ligne = p.getLigne() - this.getPosition().getLigne();
+        int dif_colonne = p.getColonne() - this.getPosition().getColonne();
+
+        return Direction.getDir(dif_ligne, dif_colonne);
     }
 
+    /**
+     * Retourne le nombre d'itérations nécessaires au robot pour se déplace à la case c
+     * @param h		le temps (en minutes) alloué au robot entre chaque itération
+     * @param c		la case voisine à la position du robot
+     */
+    public int getDureeDeplacement(double h, Case c) {
+        NatureTerrain nature = c.getNatureTerrain();
+        int DistanceTotale = donnees.getCarte().getTailleCases();
+        int DistanceParcourue = (int) (this.getVitesse(nature) * h * 1000 / 60);
+        double duree = DistanceTotale/DistanceParcourue;
+        System.out.println("Dist tot = "+DistanceTotale);
+        System.out.println("Dist parc ="+DistanceParcourue);
+        System.out.println(duree);
+        return (int) duree+1;
+    }
+    /**
+     * Retourne le chemin du dossier dans lequel les images propres au type du robot sont stockées.
+     */
+    public abstract String getFileOfRobot();
+    
+    /***********************************
+     			MUTATEURS
+     **********************************/
+    
+    /**
+     * Modifie l'attribut DonneesSimulation, commun à tous les robots.
+     * @param ds	les données associées à la simulation
+     */
+    static public void setDS(DonneesSimulation ds) {
+        donnees = ds;
+    }
+
+    /**
+     * Modifie la vitesse du robot
+     * @param v		la nouvelle vitesse
+     */
+    protected abstract void setVitesseDefaut(double v);
+    
+    /**
+     * Déplace le robot
+     * @param p		la nouvelle position du robot
+     * @throws ErreurPosition
+     */
     public void setPosition(Case p) throws ErreurPosition {
         if (this.position == null) {
             this.position = p;
@@ -92,22 +185,32 @@ public abstract class Robot {
         }
     }
 
-    public Case getPosition() {
-        return position;
-    }
-
-    public int getVolumeRestant() {
-        return this.volumeRestant;
-    }
-
+    /**
+     * Augmente la quantité d'eau présente dans le reservoir, sans vérifier que le robot est sur une case appropriée
+     * @param vol	le volume ajoutée au réservoir
+     */
     public void setVolumeRestant(int vol) {
     	this.volumeRestant = vol;
     }
     
-    public abstract void remplirReservoir(int qte);
-
+    /**
+     * Retourne true peut remplir son réservoir, false sinon
+     */
     public abstract boolean peutRemplirReservoir();
+    
+    /**
+     * Augmente la quantité d'eau présente dans le reservoir, en vérifiant que le robot est sur une case appropriée
+     * @param vol	le volume ajoutée au réservoir
+     */
+    public abstract void remplirReservoir(int qte);
+    
+    
 
+    
+    /**
+     * Retourne true si le robot possède un volume suffisant pour pouvoir le verser et qu'il ait sur un incendie, false sinon
+     * @param vol	le volume que robot veut verser
+     */
     public boolean peutDeverserEau(int vol) {
         Incendie incendievise = donnees.getIncendie(this.position);
         if (incendievise != null && vol <= this.volumeRestant) {
@@ -117,6 +220,9 @@ public abstract class Robot {
         }
     }
     
+    /**
+     * Deverse vol litres d'eau
+     */
     public void deverserEau(int vol) {
         Incendie incendievise = donnees.getIncendie(this.position);
         if(peutDeverserEau(vol)) {
@@ -127,42 +233,20 @@ public abstract class Robot {
         }
     }
 
-    protected Direction getDirection(Case p) {
-        int dif_ligne = p.getLigne() - this.getPosition().getLigne();
-        int dif_colonne = p.getColonne() - this.getPosition().getColonne();
-
-        return Direction.getDir(dif_ligne, dif_colonne);
-    }
-
-    public Action getAction() {
-        return action;
-    }
-
+    /**
+     * Modifie l'action courante du robot
+     * @param action	INNOCUPE ou DEPLACE ou REMPLIR ou VERSER
+     */
     public void switchAction(Action action) {
         this.action = action;
     }
 
-    public Direction getDirection() {
-        return dir;
-    }
-
+    /**
+     * Modifie la direction vers laquelle se déplace le robot
+     * @param dir	NORD ou SUD ou OUEST ou EST
+     */
     public void setDirection(Direction dir) {
         this.dir = dir;
-    }
-
-    public int getDureeDeplacement(DonneesSimulation data, Robot rob, Simulateur sim, GestionnaireEvents gE) {
-        NatureTerrain nature = rob.getPosition().getNatureTerrain();
-        double DistanceParcourue = this.getVitesse(nature) * gE.getPasDeTemps() * (1000 / 60);
-        DistanceParcourue = DistanceParcourue * sim.getTailleCase();
-        DistanceParcourue = DistanceParcourue / data.getCarte().getTailleCases();
-        double duree = sim.getTailleCase() / DistanceParcourue;
-        /* durée de la traversée d'une case dans l'échelle réelle */
-        if ((int) duree < duree) {
-            return (int) duree + 2;
-        } else {
-            return (int) duree + 1;
-        }
-
     }
 
     @Override
@@ -170,5 +254,4 @@ public abstract class Robot {
         return new String("Le robot réalise l'action :" + this.getAction());
     }
 
-    public abstract String getFileOfRobot();
 }

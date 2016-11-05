@@ -3,9 +3,6 @@ package evenements;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 
-import donneesSimulation.DonneesSimulation;
-import robots.Robot;
-
 
 public class GestionnaireEvents implements Cloneable{
 
@@ -16,14 +13,14 @@ public class GestionnaireEvents implements Cloneable{
 	//Ce pas de temps correspond au temps (en minutes) alloué au robot entre chaque evenements.
 	//Exemple :
 	//Evenement i = "Déplacer Robot A vers le nord, Deplacer Robot B vers l'est, et remplir Robot C"
-	//A l'execution : Le Robot A se deplace 5 min vers le nord, idem pour le B, et le robot C se remplit pendant 5 minutes
+	//A l'execution : Le Robot A se deplace h min vers le nord, idem pour le B, et le robot C se remplit pendant h minutes
 	private double h = 0.5;
 	
 	//File à priorité contenant des évènements;
 	PriorityQueue<Evenement> listeEvenements;
 	
 	public GestionnaireEvents() {
-		dateSimulation = 0;
+		dateSimulation = -1; 
 		listeEvenements = new PriorityQueue<Evenement>();
 	}
 	

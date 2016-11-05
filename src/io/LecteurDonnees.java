@@ -298,11 +298,11 @@ public class LecteurDonnees {
                 switch(type)
                 {
                         case "DRONE" :
-                        	rob = new Drone(vitesse, carte.getCase(lig, col));
+                        	rob = new Drone(carte.getCase(lig, col), vitesse);
                         	listeRobots.add(rob);
                         	break;
                         case "ROUES" :
-                        	rob = new RobotARoues(vitesse, carte.getCase(lig, col));
+                        	rob = new RobotARoues(carte.getCase(lig, col), vitesse);
                         	listeRobots.add(rob);
                         	break;
                         case "PATTES" :
@@ -311,7 +311,7 @@ public class LecteurDonnees {
                         	listeRobots.add(rob);
                         	break;
                         case "CHENILLES" : 
-                        	rob = new RobotAChenilles(vitesse, carte.getCase(lig,col));
+                        	rob = new RobotAChenilles(carte.getCase(lig,col), vitesse);
                         	listeRobots.add(rob);
                         	break;
                         default : System.out.println("Le robot "+type+" n'existe pas.");

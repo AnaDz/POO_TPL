@@ -3,7 +3,6 @@ package interfacegraphique;
 import gui.GUISimulator;
 import gui.ImageElement;
 import gui.Simulable;
-import java.io.IOException;
 import carte.*;
 import donneesSimulation.DonneesSimulation;
 import java.util.*;
@@ -14,43 +13,80 @@ import java.lang.Math;
 
 public class Simulateur implements Simulable {
 
-    //L'interface graphique associée
+    /**
+     * L'interface graphique associée à la simulation
+     */
     private GUISimulator gui;
 
-    //Les données de la simuluation (carte, robots, incendies)
+    /**
+     * Les données de la simulation obtenues par lecture de la carte
+     */
     private DonneesSimulation data;
     
-    //Le gestionnaire d'évenements
+    /**
+     * Le gestionnaire d'évenements associé à la simulation
+     */
     private GestionnaireEvents GE;
     
-    //La taille de cases à l'échelle du simulateur
+    /**
+     * La taille des cases à l'échelle du simulateur
+     */
     private int tailleCases;
     
-    private int [][] coordImageRobot;
+    /**
+     * Les coordonnées des robots à l'échelle réelle au cours du temps.
+     */
+    private int [][] coordRobot;
     
+    /**
+     * Variable permettant de choisir l'image appropriée afin de donner l'impression que les robots marchent
+     */
     private int indiceImage = 0;
     
-    /**Tout est ce qui est nécessaire au restart **/
+    
+    /**************************
+       Nécessaires au restart
+     *************************/
+    
+    /**
+     * Tableau sauvegardant la position des robots
+     */
     private int [][] savePosRobots;
+    /**
+     * Tableau sauvegardant l'intensité des incendies
+     */
     private int [] saveIntensiteIncendies;
+    
+    /**
+     * Clone du gestionnaire d'evenements
+     */
     private GestionnaireEvents GEdebut;
     
-    
+    /**
+     * Construit une instance de Simulateur.
+     * @param gui 	la fenetre graphique associée à la simulation
+     * @param data 	les données de la simulation
+     * @param GE 	le gestionnaire d'evenements associée à la simulation
+     */
     public Simulateur(GUISimulator gui, DonneesSimulation data, GestionnaireEvents GE) {
-        //On instancie les attributs
+        //On instancie les attributs...
         this.gui = gui;
         gui.setSimulable(this);
         this.data = data;
-        Carte carte = data.getCarte();
-        
         this.GE = GE;
+        
+        //... en initialisant le tableau des coordonnées des robots
+        coordRobot = new int[data.getListeRobots().size()][2];
+        for (robots.Robot R : data.getListeRobots()) {
+	        coordRobot[data.getListeRobots().indexOf(R)][0] = R.getPosition().getColonne()*data.getCarte().getTailleCases();
+	        coordRobot[data.getListeRobots().indexOf(R)][1] = R.getPosition().getLigne()*data.getCarte().getTailleCases();
+        }
         
         //On sauvegarde pour pouvoir restart plus tard
         save();
         
-        coordImageRobot = new int[data.getListeRobots().size()][2];
-        
         //On détermine la nouvelle tailleCases
+        Carte carte = data.getCarte();
         int dimFenX = gui.getPanelWidth();
         int dimFenY = gui.getPanelHeight();
         if (carte.getTailleCases() * carte.getNbLignes() > dimFenX || carte.getTailleCases() * carte.getNbColonnes() > dimFenY) {
@@ -61,20 +97,28 @@ public class Simulateur implements Simulable {
             tailleCases = carte.getTailleCases();
         }
         
-
         gui.reset();
         
         //On dessine la carte
         drawCarte();
 
         //On dessine les robots
-        drawListRobots();
+        try{
+    		refreshRobots();
+    	} catch(ErreurPosition ep) {
+    		System.out.println(ep);
+    	}	
+  
 
         //On dessine les incencies
-        drawListIncendies();
+        refreshIncendies();
         
     }
     
+    /**
+     * Sauvegarde la position des robots, l'intensité des incendies, et clone le gestionnaire d'évenements.
+     * A appeler au début de la simulation pour pouvoir restart par la suite.
+     */
     private void save() {
     	List<Robot> listeRobots = data.getListeRobots();
     	List<Incendie> listeIncendies = data.getListeIncendies();
@@ -96,6 +140,9 @@ public class Simulateur implements Simulable {
     	this.GEdebut = GE.clone();
     }
     
+    /**
+     * Retourne la taille des cases à l'échelle de la simulation
+     */
     public int getTailleCase() {
         return this.tailleCases;
     }
@@ -103,6 +150,9 @@ public class Simulateur implements Simulable {
     
 
     @Override
+    /**
+     * Incrémente la date du gestionnaire d'evenements puis rafraichit les robots et les incendies.
+     */
     public void next() {
     	if(!GE.simulationTerminee()){
 	        gui.reset();
@@ -113,7 +163,7 @@ public class Simulateur implements Simulable {
                 refreshRobots();
             } catch (ErreurPosition ex) {
                 System.out.println("Un robot est sorti de la carte. Arrêt prématuré de la simulation.");
-                restart();
+                //Arrêter la sim
             }
     	}
     	else
@@ -121,6 +171,9 @@ public class Simulateur implements Simulable {
     }
 
     @Override
+    /**
+     * Réinitialise la simulation
+     */
     public void restart() {
     	//On remet les robots à leur état initial
     	List<Robot> listeRobots = data.getListeRobots();
@@ -148,14 +201,35 @@ public class Simulateur implements Simulable {
     	GE = GEdebut.clone();
     	gui.reset();
     	drawCarte();
-        drawListRobots();
-        drawListIncendies();
+    	try{
+    		refreshRobots();
+    	} catch(ErreurPosition ep) {
+    		System.out.println(ep);
+    	}
+        refreshIncendies();
     }
 
+    /******************************************************
+						PARTIE DESSIN
+    *******************************************************/
+    
     /**
-     * Partie Dessin
-     *
-     * @throws IOException *
+     * Upload une image à partir des coordonnées à l'échelle réelle.
+     * @param x			la coordonnée sur l'axe des abscisses de l'image à uploader
+     * @param y			la coordonnée sur l'axe des ordonnées de l'image à uploader
+     * @param taille	la taille de l'image 
+     * @param path		le chemin de l'image à uploader
+     * @return 			l'image uploadée dont les coordonnées ont été ramenées à l'échelle de la simulation 
+     */
+    private ImageElement loadImage(int x, int y, int taille, String path){
+    	return new ImageElement(x*tailleCases/data.getCarte().getTailleCases(), y*tailleCases/data.getCarte().getTailleCases(), path, taille, taille, null);
+    }
+    
+    /**
+     * Dessine une case. (x,y) sont à l'échelle réelle
+     * @param x			la coordonnée sur l'axe des abscisses de la case
+     * @param y			la coordonnée sur l'axe des ordonnées de la case
+     * @param nature	la nature du terrain de la case 
      */
     private void drawCase(int x, int y, NatureTerrain nature) {
         String pathImage = null;
@@ -164,100 +238,86 @@ public class Simulateur implements Simulable {
         switch (nature) {
             case EAU:
                 pathImage = "images/water.png";
-                image = new ImageElement(x, y, pathImage, tailleCases + 1, tailleCases + 1, null);
+                image = loadImage(x, y, tailleCases + 2, pathImage);
                 gui.addGraphicalElement(image);
                 break;
             case FORET:
                 pathImage = "images/herb.png";
-                image = new ImageElement(x, y, pathImage, tailleCases + 1, tailleCases + 1, null);
+                image = loadImage(x, y, tailleCases + 1, pathImage);
                 gui.addGraphicalElement(image);
                 pathImage = "images/tree.png";
-                image = new ImageElement(x, y - tailleCases, pathImage, tailleCases, (int) 2.5 * tailleCases, null);
+                image = loadImage(x, y, tailleCases + 1, pathImage);
                 gui.addGraphicalElement(image);
                 break;
             case ROCHE:
                 pathImage = "images/cherrygrove.png";
-                image = new ImageElement(x, y, pathImage, tailleCases + 1, tailleCases + 1, null);
+                image = loadImage(x, y, tailleCases + 1, pathImage);
                 gui.addGraphicalElement(image);
                 pathImage = "images/rock.png";
-                image = new ImageElement(x, y, pathImage, tailleCases, tailleCases, null);
+                image = loadImage(x, y, tailleCases + 1, pathImage);
                 gui.addGraphicalElement(image);
                 break;
             case TERRAIN_LIBRE:
                 pathImage = "images/cherrygrove.png";
-                image = new ImageElement(x, y, pathImage, tailleCases + 1, tailleCases + 1, null);
+                image = loadImage(x, y, tailleCases + 1, pathImage);
                 gui.addGraphicalElement(image);
                 break;
             case HABITAT:
                 pathImage = "images/cherrygrove.png";
-                image = new ImageElement(x, y, pathImage, tailleCases + 1, tailleCases + 1, null);
+                image = loadImage(x, y, tailleCases + 1, pathImage);
                 gui.addGraphicalElement(image);
                 pathImage = "images/barktown.png";
-                image = new ImageElement(x, y, pathImage, tailleCases + 1, tailleCases + 1, null);
+                image = loadImage(x, y, tailleCases + 1, pathImage);
                 gui.addGraphicalElement(image);
                 break;
             default:
                 System.out.println("Nature du terrain non reconnue. Fermeture de la fenêtre graphique");
-                //lever exception
+                //A faire
                 break;
         }
     }
 
+    /**
+     * Dessine la carte, case par case.
+     */
     private void drawCarte() {
         Carte carte = data.getCarte();
 
         for (int i = 0; i < carte.getNbLignes(); i++) {
             for (int j = 0; j < carte.getNbColonnes(); j++) {
-                drawCase(j * tailleCases, i * tailleCases, carte.getCase(i, j).getNatureTerrain());
+                drawCase(j * data.getCarte().getTailleCases(), i * data.getCarte().getTailleCases(), carte.getCase(i, j).getNatureTerrain());
             }
         }
     }
 
-    private void drawRobot(robots.Robot R) {
-        String pathImage = R.getFileOfRobot() + "SUD1.png";
-        int x = R.getPosition().getLigne() * tailleCases;
-        int y = R.getPosition().getColonne() * tailleCases;
-        ImageElement image = new ImageElement(y, x, pathImage, tailleCases + 1, tailleCases + 1, null);
-        coordImageRobot[data.getListeRobots().indexOf(R)][0] = y;
-        coordImageRobot[data.getListeRobots().indexOf(R)][1] = x;
-        gui.addGraphicalElement(image);
-    }
-
-    private void drawListRobots() {
-        for (robots.Robot it : data.getListeRobots()) {
-            drawRobot(it);
-        }
-    }
-
+    /**
+     * Dessine un incendie
+     * @param inc 	l'incendie à dessiner
+     */
     private void drawIncendie(Incendie inc) {
-        String pathImage = "images/fire.png";
-        int x = inc.getCaseIncendie().getLigne() * tailleCases;
-        int y = inc.getCaseIncendie().getColonne() * tailleCases;
-        ImageElement image = new ImageElement(y, x, pathImage, tailleCases + 1, tailleCases + 1, null);
-        gui.addGraphicalElement(image);
-    }
-
-    private void drawListIncendies() {
-        for (Incendie it : data.getListeIncendies()) {
-            drawIncendie(it);
+        int x = inc.getCaseIncendie().getLigne() * data.getCarte().getTailleCases();
+        int y = inc.getCaseIncendie().getColonne() * data.getCarte().getTailleCases();
+        if(inc.getNbLitres() > 0) {
+	        ImageElement image = loadImage(y, x, tailleCases, "images/fire.png");
+	        gui.addGraphicalElement(image);
+        } else {
+        	//On pourrait afficher de la fumée
         }
     }
     
+    /**
+     * Rafraichit les incendies. Appelée à chaque next().
+     */
     private void refreshIncendies(){
-    	int x, y;
     	for(Incendie inc : data.getListeIncendies()) {
-    		x = inc.getCaseIncendie().getLigne() * tailleCases;
-    		y = inc.getCaseIncendie().getColonne() * tailleCases;
-    		if(inc.getNbLitres() > 0) {
-    			ImageElement image = new ImageElement(y, x, "images/fire.png", tailleCases+1, tailleCases+1, null);
-        		gui.addGraphicalElement(image);
-    		} else {
-    			//On pourrait afficher de la fumée
-    		}
+    		drawIncendie(inc);
     	}
     }
+    
+    /**
+     * Rafraichit les robots en fonction de leur ACTION courante. Appelée à chaque next().
+     */
     private void refreshRobots() throws ErreurPosition{
-    //Ce refresh à lieu toutes les GestionnaireEvents.h minutes
     	Robot rob;
     	for(int i = 0; i < data.getListeRobots().size(); i++){
     		rob = data.getListeRobots().get(i);
@@ -266,15 +326,14 @@ public class Simulateur implements Simulable {
     			bougeRobot(rob, i);
     			break;
     		case REMPLIR:
-    			remplitReservoir(rob, i, (int) (GE.getPasDeTemps() * rob.getCapaciteMax()/rob.getTempsRemplissageComp()) +1);
+    			remplitReservoir(rob, i);
     			break;
     		case VERSER:
-    			verseReservoir(rob, i, (int) (GE.getPasDeTemps() * rob.getInterventionUnitaire() * 60)+1);
+    			verseReservoir(rob, i);
     			break;
     		case INNOCUPE:
-    			//On réactualise juste l'image du robot, et on le met de face pour montrer qu'il attend de nouvelles instructions
     			String pathImage = rob.getFileOfRobot() + "SUD1.png";
-    			ImageElement image = new ImageElement(coordImageRobot[i][0], coordImageRobot[i][1], pathImage, tailleCases + 1, tailleCases + 1, null);
+    			ImageElement image = loadImage(coordRobot[i][0], coordRobot[i][1], tailleCases+1, pathImage);
     			gui.addGraphicalElement(image);
     			break;
     		default:
@@ -284,21 +343,25 @@ public class Simulateur implements Simulable {
     	}
     }
     
+    /**
+     * Translate un robot vers sa direction. Le robot se déplace de la distance qu'il a pu parcourir en GE.getPasDeTemps() minutes
+     * @param rob le robot a déplacer.
+     * @param indexRob la position du robot dans data.ListeRobots
+     */
     private void bougeRobot(Robot rob, int indexRob) throws ErreurPosition{
     	double vitesse = rob.getVitesse(rob.getPosition().getNatureTerrain());
     	int distanceParcourue = (int) (vitesse*GE.getPasDeTemps()*1000/60); //distance parcourue à echelle réelle
-    	distanceParcourue = distanceParcourue*tailleCases/data.getCarte().getTailleCases();//distance parcourue à échelle de la carte
-    	int depX = coordImageRobot[indexRob][0];
-    	int depY = coordImageRobot[indexRob][1];
-    	int arriveX = (rob.getPosition().getColonne()+rob.getDirection().getY())*tailleCases;
-    	int arriveY = (rob.getPosition().getLigne()+rob.getDirection().getX())*tailleCases;
+    	int depX = coordRobot[indexRob][0];
+    	int depY = coordRobot[indexRob][1];
+    	int arriveX = (rob.getPosition().getColonne()+rob.getDirection().getY())*data.getCarte().getTailleCases();
+    	int arriveY = (rob.getPosition().getLigne()+rob.getDirection().getX())*data.getCarte().getTailleCases();
     	
     	if(rob.getDirection().getX() == 0){
     		//DEPLACEMENT HORIZONTAL
     		int distanceRestante = Math.abs(depX-arriveX); 
     		if(distanceParcourue >= distanceRestante){
     			//on est arrivés
-    			coordImageRobot[indexRob][0] += rob.getDirection().getY()*distanceRestante;
+    			coordRobot[indexRob][0] += rob.getDirection().getY()*distanceRestante;
     			int lig = rob.getPosition().getLigne();
     			int col = rob.getPosition().getColonne()+rob.getDirection().getY();
     			rob.setPosition(data.getCarte().getCase(lig, col));
@@ -306,7 +369,7 @@ public class Simulateur implements Simulable {
     		}
     		else {
     			//on est pas arrivés
-    			coordImageRobot[indexRob][0] += rob.getDirection().getY()*distanceParcourue; 
+    			coordRobot[indexRob][0] += rob.getDirection().getY()*distanceParcourue; 
     		}
     	}
     	else {
@@ -314,7 +377,7 @@ public class Simulateur implements Simulable {
     		int distanceRestante = Math.abs(depY-arriveY);
     		if(distanceParcourue >= distanceRestante){
     			//on est arrivés
-    			coordImageRobot[indexRob][1] += rob.getDirection().getX()*distanceRestante;
+    			coordRobot[indexRob][1] += rob.getDirection().getX()*distanceRestante;
     			int lig = rob.getPosition().getLigne()+rob.getDirection().getX();
     			int col = rob.getPosition().getColonne();
     			rob.setPosition(data.getCarte().getCase(lig, col));
@@ -322,28 +385,34 @@ public class Simulateur implements Simulable {
     		}
     		else {
     			//on est pas arrivés
-    			coordImageRobot[indexRob][1] += rob.getDirection().getX()*distanceParcourue; 
+    			coordRobot[indexRob][1] += rob.getDirection().getX()*distanceParcourue; 
     		}
     	}
     	String pathImage = rob.getFileOfRobot() + rob.getDirection().toString() + indiceImage + ".png";
     	indiceImage = (indiceImage+1)%2;
-    	ImageElement image = new ImageElement(coordImageRobot[indexRob][0], coordImageRobot[indexRob][1], pathImage, tailleCases + 1, tailleCases + 1, null);
+    	ImageElement image = loadImage(coordRobot[indexRob][0], coordRobot[indexRob][1], tailleCases+1, pathImage);
     	
     	gui.addGraphicalElement(image);
     }
-    
-    private void remplitReservoir(Robot rob, int indexRob, int qte){
+
+    /**
+     * Remplit le réservoir d'un robot. Le volume ajoutée dans le reservoir correspond au volume que le robot peut puiser en GE.getPasDeTemps()
+     * @param rob 		le robot concerné
+     * @param indexRob 	la position du robot dans data.ListeRobots
+     */
+    private void remplitReservoir(Robot rob, int indexRob){
     	String pathImage;
+    	int qte = (int) (GE.getPasDeTemps() * rob.getCapaciteMax()/rob.getTempsRemplissageComp()) +1;
     	if(rob.getDirection() == null) {
     		pathImage = rob.getFileOfRobot() + "SUD" + indiceImage + ".png";
     	} else {
     		pathImage = rob.getFileOfRobot() + rob.getDirection().toString() + indiceImage + ".png";
     	}
     	//Elements graphiques
-    	ImageElement image = new ImageElement(coordImageRobot[indexRob][0], coordImageRobot[indexRob][1], pathImage, tailleCases + 1, tailleCases + 1, null);
+    	ImageElement image = loadImage(coordRobot[indexRob][0], coordRobot[indexRob][1], tailleCases+1, pathImage);
     	gui.addGraphicalElement(image);
     	pathImage = "images/remplir.png";
-    	image = new ImageElement(coordImageRobot[indexRob][0], coordImageRobot[indexRob][1], pathImage, tailleCases + 1, tailleCases + 1, null);
+    	image = loadImage(coordRobot[indexRob][0], coordRobot[indexRob][1], tailleCases+1, pathImage);
     	gui.addGraphicalElement(image);
     	//On remplit le robot
     	rob.remplirReservoir(qte);
@@ -351,25 +420,32 @@ public class Simulateur implements Simulable {
     	//On ajoute une "alarme graphique" si le robot est totalement remplit.
     	if(rob.getCapaciteMax() == rob.getVolumeRestant()){
     		pathImage = "images/bubble.png";
-    		image = new ImageElement(coordImageRobot[indexRob][0], coordImageRobot[indexRob][1]+tailleCases, pathImage, tailleCases + 1, tailleCases + 1, null);
+    		image = loadImage(coordRobot[indexRob][0], coordRobot[indexRob][1]-tailleCases, tailleCases+1, pathImage);
     		gui.addGraphicalElement(image);
     		//Ajouter un wait pour qu'on ai le temps de voir l'alarme
     		rob.switchAction(Action.INNOCUPE);
     	}
     }
     
-    private void verseReservoir(Robot rob, int indexRob, int qte){
+    /**
+     * Verse le reservoir d'un robot. Le volume versée correspond au volume que peut verser le robot en GE.getPasDeTemps()
+     * @param rob 		le robot concerné.
+     * @param indexRob 	la position du robot dans data.ListeRobots
+     * @param qte		la quantité à verser
+     */
+    private void verseReservoir(Robot rob, int indexRob){
     	String pathImage;
+    	int qte = (int) (GE.getPasDeTemps() * rob.getInterventionUnitaire() * 60)+1;
     	if(rob.getDirection() == null) {
     		pathImage = rob.getFileOfRobot() + "SUD" + indiceImage + ".png";
     	} else {
     		pathImage = rob.getFileOfRobot() + rob.getDirection().toString() + indiceImage + ".png";
     	}
     	//Elements graphiques
-    	ImageElement image = new ImageElement(coordImageRobot[indexRob][0], coordImageRobot[indexRob][1], pathImage, tailleCases + 1, tailleCases + 1, null);
+    	ImageElement image = loadImage(coordRobot[indexRob][0], coordRobot[indexRob][1], tailleCases+1, pathImage);
     	gui.addGraphicalElement(image);
     	pathImage = "images/verser.png";
-    	image = new ImageElement(coordImageRobot[indexRob][0], coordImageRobot[indexRob][1], pathImage, tailleCases + 1, tailleCases + 1, null);
+    	image = loadImage(coordRobot[indexRob][0], coordRobot[indexRob][1], tailleCases+1, pathImage);
     	gui.addGraphicalElement(image);
     	//On remplit le robot
     	if(rob.getVolumeRestant() < qte){

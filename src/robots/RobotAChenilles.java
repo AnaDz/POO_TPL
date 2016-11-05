@@ -53,12 +53,9 @@ public class RobotAChenilles extends Robot {
         this.volumeRestant = this.capaciteMax;
     }
 
-    public RobotAChenilles(double vitesse, Case pos) throws ErreurPosition {
-        super(vitesse, pos);
-        this.capaciteMax = 2000;
-        this.tempsRemplissageComp = 5;
-        this.interventionUnitaire = (int) (100/8) + 1;
-        this.volumeRestant = this.capaciteMax;
+    public RobotAChenilles(Case pos, double vitesse) throws ErreurPosition {
+        this(pos);
+        setVitesseDefaut(vitesse);
     }
     
     public void remplirReservoir(int qte){
