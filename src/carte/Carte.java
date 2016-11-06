@@ -1,5 +1,8 @@
 package carte;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Carte {
 	private int tailleCases;
 	private int nbLignes;
@@ -46,7 +49,9 @@ public class Carte {
 	}
 	
 	public boolean voisinExiste(Case src, Direction dir){
-		return (src.getLigne()+dir.getX() < getNbLignes() && src.getColonne()+dir.getY() < getNbColonnes());
+		int newX = src.getLigne()+dir.getX();
+		int newY = src.getColonne()+dir.getY();
+		return (newX < getNbLignes() && newX >=0 && newY < getNbColonnes() && newY >= 0);
 	}
 	
 	public Case getVoisin(Case src, Direction dir){
@@ -54,6 +59,18 @@ public class Carte {
 			return (getCase(src.getLigne()+dir.getX(),src.getColonne()+dir.getY()));
 		else
 			return null;
+	}
+	
+	public ArrayList<Case> getAllVoisins(Case src){
+		 ArrayList<Case> res = new ArrayList<Case>();
+		 Direction [] allDir = Direction.values();
+		 
+		 for(int i = 0; i < allDir.length; i++){
+			 if(voisinExiste(src, allDir[i])) {
+				 res.add(getCase(src.getLigne()+allDir[i].getX(),src.getColonne()+allDir[i].getY()));
+			 }
+		 }
+		 return res;
 	}
 }
 

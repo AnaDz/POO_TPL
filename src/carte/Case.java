@@ -1,4 +1,5 @@
 package carte;
+import java.util.*;
 
 public class Case {
 	private int ligne;

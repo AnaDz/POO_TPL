@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.PriorityQueue;
 
 
+
 public class GestionnaireEvents implements Cloneable{
 
 	//Date courante de la simulation
