@@ -124,7 +124,7 @@ public abstract class Robot {
      * @return		NORD ou SUD ou OUEST ou EST
      */
     //Que se passe-t-il si la case n'est pas voisine ?
-    protected Direction getDirection(Case p) {
+    public Direction getDirection(Case p) {
         int dif_ligne = p.getLigne() - this.getPosition().getLigne();
         int dif_colonne = p.getColonne() - this.getPosition().getColonne();
 
