@@ -34,7 +34,6 @@ public class ChefRobot {
         public void bougeRobot(Robot rob, Carte carte, Case deb, Case fin) {
             /* On génère la liste de déplacement */
             List<Case> deplacement = AStar.trouveChemin(carte, rob, deb, fin);
-            GestionnaireEvents gE = new GestionnaireEvents();
             Evenement deplace;
             /* On parcours la liste et cree les evements adéquats on commence a l'indice 1 car à l'indice 0 on a la position initiale du robot*/
             for (int i=1; i<deplacement.size(); i++){
