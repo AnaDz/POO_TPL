@@ -29,39 +29,44 @@ public class TestPlusCourtChemin {
         	//Lecture des Données
             DonneesSimulation data = LecteurDonnees.lire(args[0], false);
             Robot.setDS(data);
-            
+            GestionnaireEvents gE = new GestionnaireEvents();
             //Calcul des plus courts chemins
+            ChefRobot chef = new ChefRobot(data, gE);
             Carte carte = data.getCarte();
             Robot rob = data.getListeRobots().get(0);
             Case deb = rob.getPosition();
             Case fin = carte.getCase(7, 3);
-            List<Case> C0 = AStar.trouveChemin(carte, rob, deb, fin);
-            System.out.println("Chemin du robot 0 : "+C0);
+            //List<Case> C0 = AStar.trouveChemin(carte, rob, deb, fin);
+            //System.out.println("Chemin du robot 0 : "+C0);
+            chef.bougeRobot(rob, carte, deb, fin);
+            
             
             rob = data.getListeRobots().get(1);
             deb = rob.getPosition();
-            List<Case> C1 = AStar.trouveChemin(carte, rob, deb, fin);
-            System.out.println("Chemin du robot 1 : "+C1);
+            //List<Case> C1 = AStar.trouveChemin(carte, rob, deb, fin);
+            //System.out.println("Chemin du robot 1 : "+C1);
+            chef.bougeRobot(rob, carte, deb, fin);
             
             rob = data.getListeRobots().get(2);
             deb = rob.getPosition();
-            List<Case> C2 = AStar.trouveChemin(carte, rob, deb, fin);
-            System.out.println("Chemin du robot 2 : "+C2);
+            //List<Case> C2 = AStar.trouveChemin(carte, rob, deb, fin);
+            //System.out.println("Chemin du robot 2 : "+C2);
+            chef.bougeRobot(rob, carte, deb, fin);
             
             rob = data.getListeRobots().get(3);
             deb = rob.getPosition();
-            List<Case> C3 = AStar.trouveChemin(carte, rob, deb, fin);
-            System.out.println("Chemin du robot 3 : "+C3);
+            //List<Case> C3 = AStar.trouveChemin(carte, rob, deb, fin);
+            //System.out.println("Chemin du robot 3 : "+C3);
+            chef.bougeRobot(rob, carte, deb, fin);
             
-            //TO DO
-            //Traduire ça en successions de déplacements. Les robots doivent tous arriver à la case (7,3)
-            GestionnaireEvents GE = new GestionnaireEvents();
             
             //Lancement de la simulation
+            Evenement e = new ProgrammeFin(700);
+            gE.ajouteEvenement(e);
             int dimFenX = 500;
             int dimFenY = 500;
             GUISimulator gui = new GUISimulator(dimFenX, dimFenY, Color.BLACK);
-            Simulateur sim = new Simulateur(gui, data, GE);
+            Simulateur sim = new Simulateur(gui, data, gE);
      
         } catch (FileNotFoundException e) {
             System.out.println("fichier " + args[0] + " inconnu ou illisible");

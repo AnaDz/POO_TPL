@@ -31,13 +31,22 @@ public class ChefRobot {
 		}
 	}
         
+        public static Direction getDirection(Case deb,Case fin) {
+            int dif_ligne = fin.getLigne() - deb.getLigne();
+            int dif_colonne = fin.getColonne() - deb.getColonne();
+
+            return Direction.getDir(dif_ligne, dif_colonne);
+    }
+        
+        
         public void bougeRobot(Robot rob, Carte carte, Case deb, Case fin) {
             /* On génère la liste de déplacement */
             List<Case> deplacement = AStar.trouveChemin(carte, rob, deb, fin);
             Evenement deplace;
             /* On parcours la liste et cree les evements adéquats on commence a l'indice 1 car à l'indice 0 on a la position initiale du robot*/
             for (int i=1; i<deplacement.size(); i++){
-                Direction dir = rob.getDirection(deplacement.get(i));
+                Direction dir = getDirection(deplacement.get(i-1), deplacement.get(i));
+                System.out.println(dir);
                 /*CONVERSION A REVOIR*/
                 int date = (int) AStar.couts[deplacement.get(i).getLigne()][deplacement.get(i).getColonne()][0];
                 System.out.println(i);
