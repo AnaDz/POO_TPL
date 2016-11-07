@@ -5,6 +5,8 @@
  */
 package robots;
 
+import java.util.List;
+
 import carte.*;
 import donneesSimulation.DonneesSimulation;
 

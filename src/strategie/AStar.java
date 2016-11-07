@@ -45,12 +45,6 @@ public class AStar {
 		while(!openQueue.isEmpty()) {
 			Case u = openQueue.poll(); //on dépile u
 			if(u == fin) {
-				for(int i = 0; i < carte.getNbLignes(); i++){
-					for(int j = 0; j < carte.getNbColonnes(); j++) {
-						System.out.print(couts[i][j][0] +"\t");
-					}
-					System.out.print("\n");
-				}
 				return path(path, fin);
 			}
 			closedList.add(u);
@@ -114,6 +108,13 @@ public class AStar {
         }
         Collections.reverse(pathList);
         return pathList;
+	}
+	
+	/**
+	 * Cette fonction retourne le tableau des couts utilisés dans l'algorithme de A*.
+	 */
+	public static double[][][] getCouts(){
+		return couts;
 	}
 	
 	/**

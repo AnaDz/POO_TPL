@@ -13,6 +13,7 @@ import donneesSimulation.DonneesSimulation;
 import evenements.*;
 import carte.*;
 import strategie.*;
+import java.util.*;
 /**
  * Ce fichier teste l'algorithme de plus court chemin. Il est a appeler avec cartes/cartePlusCourtChemin.map
  */
@@ -51,7 +52,6 @@ public class TestPlusCourtChemin {
             deb = rob.getPosition();
             List<Case> C3 = AStar.trouveChemin(carte, rob, deb, fin);
             System.out.println("Chemin du robot 3 : "+C3);
-            
             
             //TO DO
             //Traduire ça en successions de déplacements. Les robots doivent tous arriver à la case (7,3)
