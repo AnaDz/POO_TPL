@@ -13,7 +13,7 @@ public class AStar {
 	/** Le tableau de f et h
 	 *  Voir description de l'algorithme de A*
 	 */
-	static double [][][] couts;
+	private static int [][][] couts;
 	
 	/**
 	 * Cette fonction trouve le plus court chemin grâce à l'algorithme de A*.
@@ -21,9 +21,10 @@ public class AStar {
 	 * @param rob	le robot qui doit se déplacer
 	 * @param deb	la case d'où part le robot
 	 * @param fin	la case où doit arriver le robot
+	 * @param h		le pas de temps définit dans le gestionnaire d'événements
 	 * @return		le plus court chemin de deb à fin
 	 */
-	public static List<Case> trouveChemin(Carte carte, Robot rob, Case deb, Case fin){
+	public static List<Case> trouveChemin(Carte carte, Robot rob, Case deb, Case fin, double h){
 		/** L'ensemble des noeuds qui restent à explorer **/
 		PriorityQueue<Case> openQueue = new PriorityQueue<Case> (10, new NodeComparator());
 		/** L'ensemble des noeuds qui ont été exploré **/
@@ -32,10 +33,10 @@ public class AStar {
 	    Map<Case, Case> path = new HashMap<Case, Case>();
 		
 	    /** INITIALISATION **/
-	    couts = new double [carte.getNbLignes()][carte.getNbColonnes()][2];
+	    couts = new int [carte.getNbLignes()][carte.getNbColonnes()][2];
 	    for(int i = 0; i < carte.getNbLignes(); i++) {
 	    	for(int j = 0; j < carte.getNbColonnes(); j++){
-	    		couts[i][j][0] = Double.POSITIVE_INFINITY;
+	    		couts[i][j][0] = Integer.MAX_VALUE;
  	    	}
 	    }
 	    /** Algorithme A* **/
@@ -46,7 +47,7 @@ public class AStar {
 			Case u = openQueue.poll(); //on dépile u
 			if(u == fin) {
 				return path(path, fin);
-			}
+		}
 			closedList.add(u);
 			ArrayList<Case> voisin = carte.getAllVoisins(u);
 			
@@ -56,8 +57,8 @@ public class AStar {
 				if(vitesse == 0 || closedList.contains(v)) continue; 
 				
 				//La distance du début jusqu'au voisin.
-				double distanceBetweenUandV = rob.getDureeDeplacement(0.5, u);
-				double tentativeG = distanceBetweenUandV + couts[u.getLigne()][u.getColonne()][0];
+				int distanceBetweenUandV = rob.getDureeDeplacement(h, u);
+				int tentativeG = distanceBetweenUandV + couts[u.getLigne()][u.getColonne()][0];
 				
 				if(!openQueue.contains(v))
 					openQueue.add(v);
@@ -87,7 +88,7 @@ public class AStar {
 	 * @param fin	le noeud destination
 	 * @return		l'heuristique associé au noeud x
 	 */
-	private static double heuristique(Case x, Case fin) {
+	private static int heuristique(Case x, Case fin) {
 		return Math.abs(fin.getLigne()-x.getLigne())+ Math.abs(fin.getColonne()-x.getColonne());
 	}
 	/**
@@ -113,7 +114,7 @@ public class AStar {
 	/**
 	 * Cette fonction retourne le tableau des couts utilisés dans l'algorithme de A*.
 	 */
-	public static double[][][] getCouts(){
+	public static int[][][] getCouts(){
 		return couts;
 	}
 	

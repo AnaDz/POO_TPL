@@ -1,7 +1,6 @@
 package carte;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Carte {
 	private int tailleCases;

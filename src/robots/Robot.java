@@ -5,8 +5,6 @@
  */
 package robots;
 
-import java.util.List;
-
 import carte.*;
 import donneesSimulation.DonneesSimulation;
 
@@ -118,18 +116,7 @@ public abstract class Robot {
         return interventionUnitaire;
     }
 
-    /**
-     * Retourne la direction de la case passée en paramètre par rapport à la case courante.
-     * @param p 	la case voisine à la case courante
-     * @return		NORD ou SUD ou OUEST ou EST
-     */
-    //Que se passe-t-il si la case n'est pas voisine ?
-    public Direction getDirection(Case p) {
-        int dif_ligne = p.getLigne() - this.getPosition().getLigne();
-        int dif_colonne = p.getColonne() - this.getPosition().getColonne();
-
-        return Direction.getDir(dif_ligne, dif_colonne);
-    }
+    
 
     /**
      * Retourne le nombre d'itérations nécessaires au robot pour se déplace à la case c
@@ -143,6 +130,8 @@ public abstract class Robot {
         double duree = DistanceTotale/DistanceParcourue;
         return (int) duree+1;
     }
+    
+    
     /**
      * Retourne le chemin du dossier dans lequel les images propres au type du robot sont stockées.
      */

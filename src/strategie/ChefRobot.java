@@ -3,8 +3,6 @@ import donneesSimulation.DonneesSimulation;
 import evenements.GestionnaireEvents;
 import carte.*;
 import evenements.*;
-import java.util.LinkedList;
-import java.util.Deque;
 import java.util.List;
 import robots.*;
 
@@ -30,29 +28,28 @@ public class ChefRobot {
 			caseCouranteRobots[i] = data.getListeRobots().get(i).getPosition();
 		}
 	}
-        
-        public static Direction getDirection(Case deb,Case fin) {
-            int dif_ligne = fin.getLigne() - deb.getLigne();
-            int dif_colonne = fin.getColonne() - deb.getColonne();
-
-            return Direction.getDir(dif_ligne, dif_colonne);
-    }
-        
-        
-        public void bougeRobot(Robot rob, Carte carte, Case deb, Case fin) {
-            /* On génère la liste de déplacement */
-            List<Case> deplacement = AStar.trouveChemin(carte, rob, deb, fin);
-            Evenement deplace;
-            /* On parcours la liste et cree les evements adéquats on commence a l'indice 1 car à l'indice 0 on a la position initiale du robot*/
-            for (int i=1; i<deplacement.size(); i++){
-                Direction dir = getDirection(deplacement.get(i-1), deplacement.get(i));
-                System.out.println(dir);
-                /*CONVERSION A REVOIR*/
-                int date = (int) AStar.couts[deplacement.get(i).getLigne()][deplacement.get(i).getColonne()][0];
-                System.out.println(i);
-                deplace = new DeplaceRobot(date,rob, dir);
-                gE.ajouteEvenement(deplace);
-            }
-                       
+    
+	/**
+	 * Programme la liste des déplacements élémentaires du robot pour se rendre à une position et les ajoute au Gestionnaire d'évenements.
+	 * @param rob	le robot à déplacer
+	 * @param deb	la case d'où part le robot
+	 * @param fin	la case où arrive le robot
+	 * @return		la date à laquelle le robot arrivera à la case fin
+	 */
+    public int bougeRobot(Robot rob, Case deb, Case fin, int date_debut) {
+        /* On génère la liste de déplacement */
+        Carte carte = data.getCarte();
+        List<Case> deplacement = AStar.trouveChemin(carte, rob, deb, fin, gE.getPasDeTemps());
+        Evenement deplace;
+        int [][][] couts = AStar.getCouts();
+        int i;
+        /* On parcours la liste et cree les evements adéquats on commence a l'indice 1 car à l'indice 0 on a la position initiale du robot*/
+        for (i=1; i<deplacement.size(); i++){
+        	Direction dir = deplacement.get(i-1).getDirection(deplacement.get(i));
+            int date = date_debut + couts[deplacement.get(i-1).getLigne()][deplacement.get(i-1).getColonne()][0];
+            deplace = new DeplaceRobot(date,rob, dir);
+            gE.ajouteEvenement(deplace);
         }
+        return couts[deplacement.get(i-1).getLigne()][deplacement.get(i-1).getColonne()][0];
+    }
 }
