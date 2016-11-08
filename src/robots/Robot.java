@@ -127,8 +127,30 @@ public abstract class Robot {
         NatureTerrain nature = c.getNatureTerrain();
         int DistanceTotale = donnees.getCarte().getTailleCases();
         int DistanceParcourue = (int) (this.getVitesse(nature) * h * 1000 / 60);
-        double duree = DistanceTotale/DistanceParcourue;
-        return (int) duree+1;
+        int duree = DistanceTotale/DistanceParcourue;
+        return duree+1;
+    }
+    
+    /**
+     * Calcule le nombre d'itérations nécessaires au robot pour verser un volume vol de son réservoir.
+     * @param h		le temps (en minutes) alloué au robot entre chaque itération
+     * @param vol	le volume à verser
+     * @return		le nombre d'itérations nécessaires
+     */
+    public int getDureeVerser(double h, int vol) {
+    	double volUnitaire = h * interventionUnitaire * 60; //le volume verser en h minutes
+    	return (int) (vol/volUnitaire) + 1;
+    }
+    
+    /**
+     * Calcule le nombre d'itérations nécessaires au robot pour remplir un volume vol de son réservoir.
+     * @param h		le temps (en minutes) alloué au robot entre chaque itération
+     * @param vol	le volume à remplir
+     * @return		le nombre d'itérations nécessaires
+     */
+    public int getDureeRemplir(double h, int vol) {
+    	double volUnitaire = h * capaciteMax/tempsRemplissageComp; //le volume remplit en h minutes
+    	return (int) (vol/volUnitaire) + 1;
     }
     
     

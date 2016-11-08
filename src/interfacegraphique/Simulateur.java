@@ -315,7 +315,11 @@ public class Simulateur implements Simulable {
     			verseReservoir(rob, i);
     			break;
     		case INNOCUPE:
-    			String pathImage = rob.getFileOfRobot() + "SUD1.png";
+    			String pathImage = rob.getFileOfRobot();
+    			if (rob.getDirection() != null)
+    				pathImage += rob.getDirection().toString()+"1.png";
+    			else
+    				pathImage += "SUD1.png";
     			ImageElement image = loadImage(coordRobot[i][0], coordRobot[i][1], tailleCases+1, pathImage);
     			gui.addGraphicalElement(image);
     			break;
@@ -385,7 +389,7 @@ public class Simulateur implements Simulable {
      */
     private void remplitReservoir(Robot rob, int indexRob){
     	String pathImage;
-    	int qte = (int) (GE.getPasDeTemps() * rob.getCapaciteMax()/rob.getTempsRemplissageComp()) +1;
+    	int qte = (int) (GE.getPasDeTemps() * rob.getCapaciteMax()/rob.getTempsRemplissageComp());
     	if(rob.getDirection() == null) {
     		pathImage = rob.getFileOfRobot() + "SUD" + indiceImage + ".png";
     	} else {
@@ -418,7 +422,7 @@ public class Simulateur implements Simulable {
      */
     private void verseReservoir(Robot rob, int indexRob){
     	String pathImage;
-    	int qte = (int) (GE.getPasDeTemps() * rob.getInterventionUnitaire() * 60)+1;
+    	int qte = (int) (GE.getPasDeTemps() * rob.getInterventionUnitaire() * 60);
     	if(rob.getDirection() == null) {
     		pathImage = rob.getFileOfRobot() + "SUD" + indiceImage + ".png";
     	} else {
