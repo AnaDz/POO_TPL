@@ -42,6 +42,7 @@ public class Drone extends Robot {
         setVitesseDefaut(vitesse);
     }
     
+    @Override
     public void remplirReservoir(int qte){
     	if(peutRemplirReservoir()) {
         	if(this.volumeRestant + qte <= this.capaciteMax) {
@@ -61,6 +62,7 @@ public class Drone extends Robot {
 	    }
     }
     
+    @Override
     public String getFileOfRobot(){
     	return "images/robots/drone/";
     }
