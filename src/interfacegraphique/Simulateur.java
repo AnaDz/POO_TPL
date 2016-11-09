@@ -137,6 +137,7 @@ public class Simulateur implements Simulable {
     
     /**
      * Retourne la taille des cases à l'échelle de la simulation
+     * @return taille case
      */
     public int getTailleCase() {
         return this.tailleCases;
@@ -193,8 +194,8 @@ public class Simulateur implements Simulable {
     }
 
     /******************************************************
-						PARTIE DESSIN
-    *******************************************************/
+     * PARTIE DESSIN
+     ******************************************************/
     
     /**
      * Upload une image à partir des coordonnées à l'échelle réelle.
