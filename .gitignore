@@ -2,3 +2,6 @@
 /build/
 build.xml
 manifest.mf
+*.html
+*.css
+/dist/
