@@ -1,7 +1,8 @@
 package donneesSimulation;
 import carte.*;
 
-import java.util.List;
+import java.util.*;
+
 import robots.*;
 
 public class DonneesSimulation {

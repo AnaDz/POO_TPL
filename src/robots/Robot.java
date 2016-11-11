@@ -279,7 +279,8 @@ public abstract class Robot {
 
     @Override
     public String toString() {
-        return new String("Le robot réalise l'action :" + this.getAction());
+        return new String("Le robot réalise l'action :" + this.getAction()+ "en position "+position.toString());
     }
+
 
 }

@@ -1,9 +1,9 @@
 package evenements;
 
 
-public abstract class Evenement implements Comparable<Evenement>, Cloneable {
+public abstract class Evenement implements Comparable<Evenement> {
 
-	private long date;
+	protected long date;
 	
 	public Evenement(long date){
 		this.date = date;
@@ -22,22 +22,16 @@ public abstract class Evenement implements Comparable<Evenement>, Cloneable {
 	
 	//On réalise l'interface Comparable<E> pour pouvoir insérer les evenements dans une file à priorités.
 	public int compareTo(Evenement e){
-		if (this.date < e.getDate())
+		if(e == null)
+              throw new NullPointerException();
+		
+		if (this.date < e.getDate()) {
 			return -1;
-		else if (this.date == e.getDate())
+		} else if (this.date == e.getDate()) {
 			return 0;
-		else
+		} else {
 			return 1;
+		}
 	}
 	
-	//On réalise l'interface Cloneable
-	public Evenement clone() {
-		Evenement copie = null;
-		try {
-    		copie = (Evenement)super.clone();
-    	} catch(CloneNotSupportedException cnse) {
-    		cnse.printStackTrace(System.err);
-    	}
-    	return copie;
-	}
 }

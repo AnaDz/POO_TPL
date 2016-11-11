@@ -19,7 +19,7 @@ public class DeplaceRobot extends Evenement {
 			rob.switchAction(Action.DEPLACE);
 		}
 		else {
-			System.out.println("Le robot en position "+rob.getPosition().toString()+" a ignoré l'ordre de se déplacer vers le "+dir.toString());
+			System.out.println("Date = "+date+" Le robot en position "+rob.getPosition().toString()+" a ignoré l'ordre de se déplacer vers le "+dir.toString()+". Action = "+rob.getAction());
 		}
 	}
 	

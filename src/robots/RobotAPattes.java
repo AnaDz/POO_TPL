@@ -58,5 +58,7 @@ public class RobotAPattes extends Robot {
     public String getFileOfRobot(){
     	return "images/robots/pattes/";
     }
+    
+    
 }
 
