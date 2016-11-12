@@ -272,28 +272,25 @@ public class Simulateur implements Simulable {
         }
     }
 
-    /**
-     * Dessine un incendie
-     * @param inc 	l'incendie à dessiner
-     */
-    private void drawIncendie(Incendie inc) {
-        int x = inc.getCaseIncendie().getLigne() * data.getCarte().getTailleCases();
-        int y = inc.getCaseIncendie().getColonne() * data.getCarte().getTailleCases();
-        if(inc.getNbLitres() > 0) {
-	        ImageElement image = loadImage(y, x, tailleCases, "images/fire.png");
-	        gui.addGraphicalElement(image);
-        } else {
-        	//On pourrait afficher de la fumée
-        }
-    }
     
     /**
      * Rafraichit les incendies. Appelée à chaque next().
      */
     private void refreshIncendies(){
+    	boolean resteIncendie = false;
     	for(Incendie inc : data.getListeIncendies()) {
-    		drawIncendie(inc);
+    		int x = inc.getCaseIncendie().getLigne() * data.getCarte().getTailleCases();
+            int y = inc.getCaseIncendie().getColonne() * data.getCarte().getTailleCases();
+            if(inc.getNbLitres() > 0) {
+            	resteIncendie = true;
+    	        ImageElement image = loadImage(y, x, tailleCases, "images/fire.png");
+    	        gui.addGraphicalElement(image);
+            } else {
+            	//On pourrait afficher de la fumée
+            }
     	}
+    	if(resteIncendie == false)
+    		GE.switchSimulationTerminee();
     }
     
     /**
