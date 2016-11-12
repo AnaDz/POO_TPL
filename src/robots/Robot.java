@@ -8,7 +8,7 @@ import donneesSimulation.DonneesSimulation;
  */
 public abstract class Robot {
 
-    static protected DonneesSimulation donnees;
+    static protected DonneesSimulation donnees = null;
 
     protected Case position;
     protected Action action = Action.INNOCUPE;
@@ -31,7 +31,6 @@ public abstract class Robot {
      * défaut
      *
      * @param pos la position de départ du robot
-     * @throws ErreurPosition
      */
     public Robot(Case pos) {
         setVitesseDefaut(-1);
@@ -44,7 +43,6 @@ public abstract class Robot {
      *
      * @param vitesse	la nouvelle vitesse
      * @param pos	la position de départ du Robot
-     * @throws ErreurPosition
      */
     public Robot(double vitesse, Case pos) {
         vitesseDefaut = vitesse;
@@ -58,6 +56,7 @@ public abstract class Robot {
      */
     /**
      * Retourne la case sur laquelle est le robot.
+     * @return case
      */
     public Case getPosition() {
         return position;
