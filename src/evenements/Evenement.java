@@ -2,7 +2,7 @@ package evenements;
 
 public abstract class Evenement implements Comparable<Evenement>, Cloneable {
 
-    private long date;
+    long date;
 
     /*
      * *****************************

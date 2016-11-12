@@ -8,7 +8,7 @@ import donneesSimulation.DonneesSimulation;
  */
 public abstract class Robot {
 
-    static protected DonneesSimulation donnees;
+    static protected DonneesSimulation donnees = null;
 
     protected Case position;
     protected Action action = Action.INNOCUPE;
