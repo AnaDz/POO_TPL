@@ -1,13 +1,19 @@
 package evenements;
 
 import java.util.*;
-
+import strategie.ChefRobotElementaire;
 
 
 public class GestionnaireEvents {
-
+	
+	// Le chef en charge de l'opération
+	private ChefRobotElementaire chef;
+	
+	// indique si un restart a été effectué
+	private boolean modeRestart = false;
+	
 	//Date courante de la simulation
-	private long dateSimulation;
+	private int dateSimulation;
 	
 	//Pas de temps en minutes
 	//Ce pas de temps correspond au temps (en minutes) alloué au robot entre chaque evenements.
@@ -22,7 +28,7 @@ public class GestionnaireEvents {
 	private List<Evenement> poubelle;
 	
 	public GestionnaireEvents() {
-		dateSimulation = -1; 
+		dateSimulation = -1;
 		listeEvenements = new PriorityQueue<Evenement>();
 		poubelle = new ArrayList<Evenement>();
 	}
@@ -31,6 +37,10 @@ public class GestionnaireEvents {
 		//System.out.println(listeEvenements.comparator());
 		return h;
 	}
+	
+	public void setChef(ChefRobotElementaire chef) {
+		this.chef = chef;
+	}
 
 	public void ajouteEvenement(Evenement e){
 		listeEvenements.add(e);
@@ -38,6 +48,11 @@ public class GestionnaireEvents {
 	
 	public void incrementeDate(){
 		dateSimulation += 1;
+		if(modeRestart == false && chef != null && dateSimulation%chef.getPasDeTps() == 0) {
+			System.out.println("Le chef élémentaire donne des directives, date = "+dateSimulation +" :");
+			chef.donneDirectives(dateSimulation);
+		}
+		
 		Iterator<Evenement> it = listeEvenements.iterator();
 		while(it.hasNext()){
 			Evenement e = it.next();
@@ -55,15 +70,17 @@ public class GestionnaireEvents {
 		return dateSimulation;
 	}
 	
-	public void returnDebSimulation(){
+	public void restartGestionnaireEvents(){
 		this.dateSimulation = -1;
 		this.listeEvenements.addAll(poubelle);
 		poubelle.clear();
+		modeRestart = true;
 	}
 	
 	public boolean simulationTerminee(){
-		return (listeEvenements.isEmpty());
+		return listeEvenements.isEmpty();
 	}
+	
 	
 	public PriorityQueue<Evenement> getListeEvenement(){
 		return listeEvenements;

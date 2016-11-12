@@ -130,7 +130,10 @@ public abstract class Robot {
         int DistanceTotale = donnees.getCarte().getTailleCases();
         int DistanceParcourue = (int) (this.getVitesse(nature) * h * 1000 / 60);
         int duree = DistanceTotale / DistanceParcourue;
-        return duree + 1;
+		if(duree*DistanceParcourue < DistanceTotale) {
+			duree += 1;
+		}
+        return duree;
     }
 
     /**
@@ -143,7 +146,10 @@ public abstract class Robot {
      */
     public int getDureeVerser(double h, int vol) {
         double volUnitaire = h * interventionUnitaire * 60; //le volume verser en h minutes
-        return (int) (vol / volUnitaire) + 1;
+        int duree = (int) (vol/volUnitaire);
+        if(duree*volUnitaire < vol)
+        	duree+=1;
+        return duree;
     }
 
     /**
@@ -156,7 +162,10 @@ public abstract class Robot {
      */
     public int getDureeRemplir(double h, int vol) {
         double volUnitaire = h * capaciteMax / tempsRemplissageComp; //le volume remplit en h minutes
-        return (int) (vol / volUnitaire) + 1;
+        int duree = (int) (vol/volUnitaire);
+        if(duree * volUnitaire < vol)
+        	duree += 1;
+        return duree;
     }
 
     /**

@@ -8,9 +8,10 @@ import java.util.List;
 import robots.*;
 
 public class ChefRobotElementaire {
-	DonneesSimulation data;
-	GestionnaireEvents GE;
-
+	private DonneesSimulation data;
+	private GestionnaireEvents GE;
+	private int pasDeTps;
+	
 	/** Les cases contenant de l'eau **/
 	ArrayList <Case> caseEau;
 	
@@ -22,48 +23,41 @@ public class ChefRobotElementaire {
 	 * incendieAssignes[i] = true si le ième robot est assigné*/
 	boolean [] robotsAssignes;
 	
-	public ChefRobotElementaire(DonneesSimulation data, GestionnaireEvents GE){
+	/** La date à partir de laquelle le robot est libre */
+	int [] dateLibreRobot;
+	
+	public ChefRobotElementaire(DonneesSimulation data, GestionnaireEvents GE, int pasDeTps){
 		this.data = data;
 		this.GE = GE;
+		this.pasDeTps = pasDeTps;
 		initialise();
 	}
 	
+	public int getPasDeTps(){
+		return pasDeTps;
+	}
+	
 	private void initialise(){
+
+		incendiesAssignes = new boolean[data.getListeIncendies().size()];
+		robotsAssignes = new boolean[data.getListeRobots().size()];
+		dateLibreRobot = new int[data.getListeRobots().size()];
 		
 		caseEau = new ArrayList<Case>();
 		for(int i = 0; i < data.getCarte().getNbLignes(); i++)
 			for(int j = 0; j < data.getCarte().getNbColonnes(); j++)
 				if(data.getCarte().getCase(i, j).getNatureTerrain() == NatureTerrain.EAU)
 					caseEau.add(data.getCarte().getCase(i, j));
-		
-		incendiesAssignes = new boolean[data.getListeIncendies().size()];
-		robotsAssignes = new boolean[data.getListeRobots().size()];
 	}
 	
 	/**
-	 * Programme la liste des déplacements élémentaires du robot pour se rendre à une position et les ajoute au Gestionnaire d'évenements.
+	 * Programme la liste des déplacements élémentaires pour qu'un robot se déplace suivant un chemin
 	 * @param rob			le robot à déplacer
-	 * @param deb			la case d'où part le robot
-	 * @param fin			la case où arrive le robot
-	 * @param date_debut	la date à laquelle part le robot
-	 * @return				la date à laquelle le robot arrivera à la case fin
+	 * @param chemin		le chemin à suivre
+	 * @param couts			le couts du chemin = les dates auxquelles le robot arrive sur les cases
+	 * @param date_debut	la date à laquelle le robot commence à se déplacer
+	 * @return				la date à laquelle le robot est arrivé sur la dernière case du chemin
 	 */
-    /*public int bougeRobot(Robot rob, Case deb, Case fin, int date_debut) {
-        
-        Carte carte = data.getCarte();
-        List<Case> deplacement = AStar.trouveChemin(carte, rob, deb, fin, GE.getPasDeTemps());
-        Evenement deplace;
-        int [][][] couts = AStar.getCouts();
-        int i;
-        for (i=1; i<deplacement.size(); i++){
-        	Direction dir = deplacement.get(i-1).getDirection(deplacement.get(i));
-            int date = date_debut + couts[deplacement.get(i-1).getLigne()][deplacement.get(i-1).getColonne()][0];
-            deplace = new DeplaceRobot(date,rob, dir);
-            GE.ajouteEvenement(deplace);
-        }
-        return couts[deplacement.get(i-1).getLigne()][deplacement.get(i-1).getColonne()][0];
-    }*/
-    
     public int bougeRobot(Robot rob, List<Case> chemin, int [][][] couts, int date_debut) {
     	Evenement deplace;
     	int i;
@@ -76,11 +70,12 @@ public class ChefRobotElementaire {
     	return date_debut + couts[chemin.get(i-1).getLigne()][chemin.get(i-1).getColonne()][0];
     }
  	
-	public void phaseAssignement(int date_debut) {
+	public void donneDirectives(int date_debut) {
+		incendiesAssignes = new boolean[data.getListeIncendies().size()];
 		for(int i = 0; i < robotsAssignes.length; i++) {
 				for(int j = 0; j < incendiesAssignes.length; j++) {
-					if(robotsAssignes[i] == false && incendiesAssignes[j] == false) {
-						System.out.println("J'assigne le robot "+i);
+					if(dateLibreRobot[i] <= date_debut && incendiesAssignes[j] == false && data.getListeRobots().get(i).getAction() == Action.INNOCUPE && data.getListeIncendies().get(j).getNbLitres() > 0) {
+						System.out.println("\tJ'assigne le robot en "+data.getListeRobots().get(i).getPosition()+ " à l'incendie en "+data.getListeIncendies().get(j).getCaseIncendie());
 						assigneRobotIncendie(i, j, date_debut);
 					}
 				}
@@ -97,8 +92,9 @@ public class ChefRobotElementaire {
 			robotsAssignes[indexRob] = true;
 			int finDeplacement = bougeRobot(rob, chemin, couts, date_debut);
 			verseEau(rob, inc, finDeplacement);
+			dateLibreRobot[indexRob] = finDeplacement+rob.getDureeVerser(GE.getPasDeTemps(), rob.getCapaciteMax());
 			if(rob.getCapaciteMax() != (int) Double.POSITIVE_INFINITY) {
-				remplirEau(rob, inc.getCaseIncendie(), finDeplacement+rob.getDureeVerser(GE.getPasDeTemps(), rob.getVolumeRestant()));
+				remplirEau(rob, inc.getCaseIncendie(), finDeplacement+rob.getDureeVerser(GE.getPasDeTemps(), rob.getCapaciteMax()));
 			}
 		}
 	}
@@ -109,7 +105,6 @@ public class ChefRobotElementaire {
 			qte = inc.getNbLitres();
 		else
 			qte = rob.getVolumeRestant();
-		System.out.println(qte);
 		VerserEau e = new VerserEau(date_debut, rob, qte);
 		GE.ajouteEvenement(e);
 	}
@@ -130,32 +125,37 @@ public class ChefRobotElementaire {
 				cEau = newcEau;
 			}
 		}
+		
+		
+		if(rob.getVitesse(NatureTerrain.EAU) == 0) {
+			//Alors le robot ne pourra pas se recharger sur une case contenant de l'eau
+			//On cherche la case adjacente la plus proche
+			diffX = pos.getLigne()-cEau.getLigne();
+			diffY = pos.getColonne()-cEau.getColonne();
+			if(diffY == 0 || Math.abs(diffX) <= Math.abs(diffY) && data.getCarte().getCase(cEau.getLigne()+diffX, cEau.getColonne()).getNatureTerrain() != NatureTerrain.EAU) {
+				cEau = data.getCarte().getCase(cEau.getLigne()+(diffX/Math.abs(diffX)), cEau.getColonne());
+			} else {
+				cEau = data.getCarte().getCase(cEau.getLigne(), cEau.getColonne()+(diffY/Math.abs(diffY)));
+			}
+		}
 		return cEau;
 	}
 	
 	public void remplirEau(Robot rob, Case pos, int date_debut) {
 		Case cEau = trouveCaseEau(rob, pos);
-		if(rob.getVitesse(NatureTerrain.EAU) == 0) {
-			//Alors le robot ne pourra pas se recharger sur une case contenant de l'eau
-			//On cherche la case adjacente la plus proche
-			int diffX = pos.getLigne()-cEau.getLigne();
-			int diffY = pos.getColonne()-cEau.getColonne();
-			if(diffY == 0 || Math.abs(diffX) <= Math.abs(diffY)) {
-				cEau = data.getCarte().getCase(cEau.getLigne()+diffX, cEau.getColonne());
-			} else {
-				cEau = data.getCarte().getCase(cEau.getLigne(), cEau.getColonne()+diffY);
-			}
-		}
-		//On devrait vérifier que la cEau est bien accessible (elle peut être bloquées par des rochers par exemple)
-		//mais on va supposer qu'un tel cas n'existe pas.
+		
+		//On devrait vérifier que la cEau est bien accessible (elle peut être bloquées par des rochers par exemple)...
+		//...et en choisir une autre si ce n'est pas le cas...
+		//...mais on va supposer qu'un tel cas n'existe pas.
 		List<Case> chemin = AStar.trouveChemin(data.getCarte(), rob, pos, cEau, GE.getPasDeTemps());
 		int [][][] couts = AStar.getCouts();
 		if(chemin != null) {
 			int finDeplacement = bougeRobot(rob, chemin, couts, date_debut);
+			dateLibreRobot[data.getListeRobots().indexOf(rob)] = finDeplacement+rob.getDureeRemplir(GE.getPasDeTemps(), rob.getCapaciteMax());
 			RemplirReservoir e = new RemplirReservoir(finDeplacement, rob);
 			GE.ajouteEvenement(e);
 		} else {
-			System.out.println("La case "+cEau.toString()+" n'est pas accessible. Un des robots ne peut pas se remplir.");
+			System.out.println("La case "+cEau+" n'est pas accessible. Le robot en "+rob.getPosition()+" ne peut pas aller se remplir");
 		}
 	}
 	

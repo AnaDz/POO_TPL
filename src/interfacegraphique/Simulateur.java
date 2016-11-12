@@ -9,6 +9,7 @@ import java.util.*;
 import evenements.*;
 import robots.*;
 import java.lang.Math;
+import strategie.ChefRobotElementaire;
 
 public class Simulateur implements Simulable {
 
@@ -69,7 +70,6 @@ public class Simulateur implements Simulable {
         gui.setSimulable(this);
         this.data = data;
         this.GE = GE;
-        
         //... en initialisant le tableau des coordonnées des robots
         coordRobot = new int[data.getListeRobots().size()][2];
         for (robots.Robot R : data.getListeRobots()) {
@@ -185,7 +185,7 @@ public class Simulateur implements Simulable {
     	}
     	
     	//On réinitialise le gestionnaire d'évenements
-    	GE.returnDebSimulation();
+    	GE.restartGestionnaireEvents();
     	gui.reset();
     	drawCarte();
     	refreshRobots();
@@ -278,20 +278,19 @@ public class Simulateur implements Simulable {
      * Rafraichit les incendies. Appelée à chaque next().
      */
     private void refreshIncendies(){
-    	boolean resteIncendie = false;
-    	for(Incendie inc : data.getListeIncendies()) {
-    		int x = inc.getCaseIncendie().getLigne() * data.getCarte().getTailleCases();
-            int y = inc.getCaseIncendie().getColonne() * data.getCarte().getTailleCases();
-            if(inc.getNbLitres() > 0) {
-            	resteIncendie = true;
-    	        ImageElement image = loadImage(y, x, tailleCases, "images/fire.png");
-    	        gui.addGraphicalElement(image);
-            } else {
-            	//On pourrait afficher de la fumée
-            }
+    	if(data.getListeIncendies() != null) {
+    		ImageElement image = null;
+	    	for(Incendie inc : data.getListeIncendies()) {
+	    		int x = inc.getCaseIncendie().getLigne() * data.getCarte().getTailleCases();
+	            int y = inc.getCaseIncendie().getColonne() * data.getCarte().getTailleCases();
+	            if(inc.getNbLitres() > 0) {
+	    	        image = loadImage(y, x, tailleCases, "images/fire.png");
+	            } else {
+	            	image = loadImage(y, x-(data.getCarte().getTailleCases())/3, tailleCases, "images/smoke.png");
+	            }
+	            gui.addGraphicalElement(image);
+	    	}
     	}
-    	if(resteIncendie == false)
-    		GE.switchSimulationTerminee();
     }
     
     /**
@@ -312,11 +311,7 @@ public class Simulateur implements Simulable {
     			verseReservoir(rob, i);
     			break;
     		case INNOCUPE:
-    			String pathImage = rob.getFileOfRobot();
-    			if (rob.getDirection() != null)
-    				pathImage += rob.getDirection().toString()+"1.png";
-    			else
-    				pathImage += "SUD1.png";
+    			String pathImage = rob.getFileOfRobot()+"SUD1.png";
     			ImageElement image = loadImage(coordRobot[i][0], coordRobot[i][1], tailleCases+1, pathImage);
     			gui.addGraphicalElement(image);
     			break;
@@ -431,15 +426,17 @@ public class Simulateur implements Simulable {
     	pathImage = "images/verser.png";
     	image = loadImage(coordRobot[indexRob][0], coordRobot[indexRob][1], tailleCases+1, pathImage);
     	gui.addGraphicalElement(image);
-    	//On remplit le robot
-    	if(rob.getVolumeRestant() < qte){
+    	
+    	if(data.getIncendie(rob.getPosition()).getNbLitres() <= 0) {
+    		rob.switchAction(Action.INNOCUPE);
+    	} else if(rob.getVolumeRestant() < qte){
     		rob.deverserEau(rob.getVolumeRestant());
     	} else {
     		rob.deverserEau(qte);
     	}
     	
     	//Si le reservoir du robot est vide ou que l'incendie est éteint, alors il devient innocupé
-    	if(rob.getVolumeRestant() <= 0 || data.getIncendie(rob.getPosition()).getNbLitres() <= 0){
+    	if(rob.getVolumeRestant() <= 0){
     		rob.switchAction(Action.INNOCUPE);
     	}
     }
