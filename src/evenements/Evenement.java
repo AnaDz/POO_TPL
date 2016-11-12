@@ -53,6 +53,10 @@ public abstract class Evenement implements Comparable<Evenement>, Cloneable {
      */
     @Override
     public int compareTo(Evenement e) {
+        if (e == null) {
+            throw new NullPointerException();
+        }
+
         if (this.date < e.getDate()) {
             return -1;
         } else if (this.date == e.getDate()) {
@@ -77,4 +81,5 @@ public abstract class Evenement implements Comparable<Evenement>, Cloneable {
         }
         return copie;
     }
+
 }

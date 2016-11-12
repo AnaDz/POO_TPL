@@ -28,25 +28,25 @@ public class TestPlusCourtChemin {
             Robot.setDS(data);
             GestionnaireEvents gE = new GestionnaireEvents();
             //Calcul des plus courts chemins
-            ChefRobot chef = new ChefRobot(data, gE);
+            //ChefRobot chef = new ChefRobot(data, gE);
             Carte carte = data.getCarte();
             Robot rob = data.getListeRobots().get(0);
             Case deb = rob.getPosition();
             Case fin = carte.getCase(7, 3);
-            chef.bougeRobot(rob, deb, fin, 0);
+            //chef.bougeRobot(rob, deb, fin, 0);
             
             
             rob = data.getListeRobots().get(1);
             deb = rob.getPosition();
-            chef.bougeRobot(rob, deb, fin, 0);
+            //chef.bougeRobot(rob, deb, fin, 0);
             
             rob = data.getListeRobots().get(2);
             deb = rob.getPosition();
-            chef.bougeRobot(rob, deb, fin, 0);
+            //chef.bougeRobot(rob, deb, fin, 0);
             
             rob = data.getListeRobots().get(3);
             deb = rob.getPosition();
-            chef.bougeRobot(rob, deb, fin, 0);
+            //chef.bougeRobot(rob, deb, fin, 0);
             
             
             //Lancement de la simulation

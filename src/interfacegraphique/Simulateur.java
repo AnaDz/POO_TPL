@@ -56,10 +56,6 @@ public class Simulateur implements Simulable {
      */
     private int [] saveIntensiteIncendies;
     
-    /**
-     * Clone du gestionnaire d'evenements
-     */
-    private GestionnaireEvents GEdebut;
     
     /**
      * Construit une instance de Simulateur.
@@ -103,15 +99,14 @@ public class Simulateur implements Simulable {
 
         //On dessine les robots
     	refreshRobots();
-  
-
+    	
         //On dessine les incencies
         refreshIncendies();
         
     }
     
     /**
-     * Sauvegarde la position des robots, l'intensité des incendies, et clone le gestionnaire d'évenements.
+     * Sauvegarde la position des robots, et l'intensité des incendies
      * A appeler au début de la simulation pour pouvoir restart par la suite.
      */
     private void save() {
@@ -131,8 +126,6 @@ public class Simulateur implements Simulable {
     		saveIntensiteIncendies[i] = listeIncendies.get(i).getNbLitres();
     	}
     	
-    	//On copie la liste d'évenements
-    	this.GEdebut = GE.clone();
     }
     
     /**
@@ -178,6 +171,12 @@ public class Simulateur implements Simulable {
     		rob.setVolumeRestant(rob.getCapaciteMax());
     	}
     	
+    	//On réinitialise le tableau des coordonnées
+    	for (robots.Robot R : data.getListeRobots()) {
+	        coordRobot[data.getListeRobots().indexOf(R)][0] = R.getPosition().getColonne()*data.getCarte().getTailleCases();
+	        coordRobot[data.getListeRobots().indexOf(R)][1] = R.getPosition().getLigne()*data.getCarte().getTailleCases();
+        }
+    	
     	//On remet les incendies à leur état initial
     	List<Incendie> listeIncendies = data.getListeIncendies();
     	
@@ -185,8 +184,8 @@ public class Simulateur implements Simulable {
     		listeIncendies.get(i).setNbLitres(saveIntensiteIncendies[i]);
     	}
     	
-    	//On clone la suite des evenements
-    	GE = GEdebut.clone();
+    	//On réinitialise le gestionnaire d'évenements
+    	GE.returnDebSimulation();
     	gui.reset();
     	drawCarte();
     	refreshRobots();

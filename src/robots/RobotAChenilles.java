@@ -35,6 +35,7 @@ public class RobotAChenilles extends Robot {
             case "FORET":
                 return this.vitesseDefaut/2;
             case "EAU" :
+            	return 0;
             case "ROCHE" :
                 return 0;
             default :

@@ -1,11 +1,10 @@
 package evenements;
 
-import java.util.Iterator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 
 
-public class GestionnaireEvents implements Cloneable{
+public class GestionnaireEvents {
 
 	//Date courante de la simulation
 	private long dateSimulation;
@@ -18,17 +17,21 @@ public class GestionnaireEvents implements Cloneable{
 	private double h = 0.5;
 	
 	//File à priorité contenant des évènements;
-	PriorityQueue<Evenement> listeEvenements;
+	private PriorityQueue<Evenement> listeEvenements;
+	
+	private List<Evenement> poubelle;
 	
 	public GestionnaireEvents() {
 		dateSimulation = -1; 
 		listeEvenements = new PriorityQueue<Evenement>();
+		poubelle = new ArrayList<Evenement>();
 	}
 	
-	public double getPasDeTemps(){
+	public double getPasDeTemps() {
+		//System.out.println(listeEvenements.comparator());
 		return h;
 	}
-	
+
 	public void ajouteEvenement(Evenement e){
 		listeEvenements.add(e);
 	}
@@ -40,6 +43,7 @@ public class GestionnaireEvents implements Cloneable{
 			Evenement e = it.next();
 			if(e.getDate() <= dateSimulation){
 				e.execute();
+				poubelle.add(e);
 				it.remove(); //on retire l'événement qu'on vient d'executer.
 			}
 			else 
@@ -49,6 +53,12 @@ public class GestionnaireEvents implements Cloneable{
 	
 	public long getDateSimulation(){
 		return dateSimulation;
+	}
+	
+	public void returnDebSimulation(){
+		this.dateSimulation = -1;
+		this.listeEvenements.addAll(poubelle);
+		poubelle.clear();
 	}
 	
 	public boolean simulationTerminee(){
@@ -69,20 +79,4 @@ public class GestionnaireEvents implements Cloneable{
 		return res;
 	}
 	
-	@Override
-	public GestionnaireEvents clone() {
-		GestionnaireEvents copie = null;
-		try{
-    		copie = (GestionnaireEvents)super.clone();
-    	} catch (CloneNotSupportedException cnse) {
-    		cnse.printStackTrace(System.err);
-    	}
-		Iterator<Evenement> iteve = this.listeEvenements.iterator();
-		copie.listeEvenements = new PriorityQueue<Evenement>();
-		while(iteve.hasNext()){
-			copie.listeEvenements.add(iteve.next().clone());
-		}
-		return copie;
-	}
-
 }

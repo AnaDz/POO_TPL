@@ -26,13 +26,11 @@ public class RobotARoues extends Robot {
     
     @Override
     public double getVitesse(NatureTerrain nature) {
-        switch(nature.toString()){
-            case "TERRAIN_LIBRE" :
-            case "HABITAT" :
-                return this.vitesseDefaut;
-      
-            default :
-                return 0;
+        String natureS = nature.toString();
+        if(natureS == "TERRAIN_LIBRE" || natureS == "HABITAT") {
+        	return this.vitesseDefaut;
+        } else {
+        	return 0;
         }
     }
     
