@@ -50,9 +50,9 @@ public class TestScenarioErreurPosition {
             Robot rob = data.getListeRobots().get(1);
             
             Evenement e1 = new DeplaceRobot(1, rob, Direction.OUEST);
-           // Evenement e2 = new DeplaceRobot(rob.getDureeDeplacement(GE.getPasDeTemps()), rob, Direction.OUEST);
+            Evenement e2 = new DeplaceRobot(rob.getDureeDeplacement(GE.getPasDeTemps(), rob.getPosition())+1, rob, Direction.OUEST);
             GE.ajouteEvenement(e1);
-            //GE.ajouteEvenement(e2);
+            GE.ajouteEvenement(e2);
             
             Evenement e13 = new ProgrammeFin(1000);
 
