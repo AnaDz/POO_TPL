@@ -7,34 +7,34 @@ package robots;
 
 import carte.*;
 
-
-  /********************************/
- /* CLASSE FILLE : ROBOT A ROUES */
-/********************************/
-
+/**
+ * *****************************
+ */
+/* CLASSE FILLE : ROBOT A ROUES */
+/**
+ * *****************************
+ */
 public class RobotARoues extends Robot {
 
-    @Override 
+    @Override
     protected void setVitesseDefaut(double v) {
-        if (v >= 0){
+        if (v >= 0) {
             this.vitesseDefaut = v;
         } else {
             this.vitesseDefaut = 80;
         }
     }
-    
-    
+
     @Override
     public double getVitesse(NatureTerrain nature) {
         if (nature == NatureTerrain.TERRAIN_LIBRE || nature == NatureTerrain.HABITAT) {
-        	return this.vitesseDefaut;
+            return this.vitesseDefaut;
         } else {
-        	return 0;
+            return 0;
         }
     }
-    
+
     /*Constructeurs */
-    
     public RobotARoues(Case pos) {
         super(pos);
         this.capaciteMax = 5000;
@@ -47,31 +47,32 @@ public class RobotARoues extends Robot {
         this(pos);
         setVitesseDefaut(vitesse);
     }
-    
+
     @Override
-    public void remplirReservoir(int qte){
-        if(peutRemplirReservoir()) {
-        	if(this.volumeRestant + qte <= this.capaciteMax) {
-        		this.volumeRestant +=  qte;
-        	} else {
-        		this.volumeRestant = this.capaciteMax;
-        	}
+    public void remplirReservoir(int qte) {
+        if (peutRemplirReservoir()) {
+            if (this.volumeRestant + qte <= this.capaciteMax) {
+                this.volumeRestant += qte;
+            } else {
+                this.volumeRestant = this.capaciteMax;
+            }
         }
     }
-    
+
     @Override
-    public boolean peutRemplirReservoir(){
-    	Carte carte = donnees.getCarte();
-        for (Direction dir : Direction.values()){
-            if (carte.voisinExiste(this.position, dir) && carte.getVoisin(this.position, dir).getNatureTerrain()==NatureTerrain.EAU)
+    public boolean peutRemplirReservoir() {
+        Carte carte = donnees.getCarte();
+        for (Direction direc : Direction.values()) {
+            if (carte.voisinExiste(this.position, direc) && carte.getVoisin(this.position, direc).getNatureTerrain() == NatureTerrain.EAU) {
                 return true;
+            }
         }
         return false;
     }
-    
+
     @Override
-    public String getFileOfRobot(){
-    	return "images/robots/roues/";
+    public String getFileOfRobot() {
+        return "images/robots/roues/";
     }
-    
+
 }

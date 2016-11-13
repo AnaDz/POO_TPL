@@ -24,6 +24,7 @@ public class DeplaceRobot extends Evenement {
     /**
      * Méthode qui ordonne au robot de se déplacer s'il n'est pas occupé
      */
+    @Override
     public void execute() {
         if (rob.getAction() == Action.INNOCUPE) {
             rob.setDirection(dir);
@@ -33,6 +34,10 @@ public class DeplaceRobot extends Evenement {
         }
     }
 
+    /**
+     * Méthode toString
+     * @return un récapitulatid de où vient le robot et où il se déplace
+     */
     @Override
     public String toString() {
         return super.toString() + " : Le robot en position " + rob.getPosition().toString() + " se déplace vers le " + dir.toString() + "\n";

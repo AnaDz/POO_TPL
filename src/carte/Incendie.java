@@ -1,8 +1,5 @@
 package carte;
 
-import evenements.Evenement;
-
-
 public class Incendie implements Cloneable {
 
     private Case caseIncendie;
@@ -71,14 +68,25 @@ public class Incendie implements Cloneable {
         this.nbLitres -= vol;
     }
 
+    /**
+     * Méthode toString
+     *
+     * @return l'emplacement et le nom de litres d'eau pour éteindre l'incendie
+     */
     @Override
     public String toString() {
         return "Incendie en position " + caseIncendie.toString() + " d'intensité " + nbLitres;
     }
 
+    /**
+     * Méthode clone() cree une copie de l'incendie
+     *
+     * @return un incendie
+     * @throws CloneNotSupportedException
+     */
     @Override
-    public Incendie clone(){
-    	Incendie copie = null;
+    public Incendie clone() throws CloneNotSupportedException {
+        Incendie copie = null;
         try {
             copie = (Incendie) super.clone();
         } catch (CloneNotSupportedException cnse) {

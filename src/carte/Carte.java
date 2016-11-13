@@ -105,9 +105,9 @@ public class Carte {
         ArrayList<Case> res = new ArrayList<Case>();
         Direction[] allDir = Direction.values();
 
-        for (int i = 0; i < allDir.length; i++) {
-            if (voisinExiste(src, allDir[i])) {
-                res.add(getCase(src.getLigne() + allDir[i].getX(), src.getColonne() + allDir[i].getY()));
+        for (Direction allDir1 : allDir) {
+            if (voisinExiste(src, allDir1)) {
+                res.add(getCase(src.getLigne() + allDir1.getX(), src.getColonne() + allDir1.getY()));
             }
         }
         return res;

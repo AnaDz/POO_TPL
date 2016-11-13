@@ -25,8 +25,8 @@ public class AStar {
      * @param rob	le robot qui doit se déplacer
      * @param deb	la case d'où part le robot
      * @param fin	la case où doit arriver le robot
-     * @param h		le pas de temps définit dans le gestionnaire d'événements
-     * @return		le plus court chemin de deb à fin
+     * @param h	le pas de temps définit dans le gestionnaire d'événements
+     * @return	le plus court chemin de deb à fin
      */
     public static List<Case> trouveChemin(Carte carte, Robot rob, Case deb, Case fin, double h) {
         /**
@@ -69,10 +69,10 @@ public class AStar {
                 //On ignore les voisins déjà évalués et les cases où le robot ne peut pas aller
                 double vitesse = rob.getVitesse(v.getNatureTerrain());
                 if (vitesse == 0 || closedList.contains(v)) {
-                	//System.out.println("vitesse =" +rob.getVitesse(v.getNatureTerrain())+" en "+v);
+                    //System.out.println("vitesse =" +rob.getVitesse(v.getNatureTerrain())+" en "+v);
                     continue;
                 }
-                
+
                 //La distance du début jusqu'au voisin.
                 int distanceBetweenUandV = rob.getDureeDeplacement(h, u);
                 int tentativeG = distanceBetweenUandV + couts[u.getLigne()][u.getColonne()][0];
@@ -138,6 +138,8 @@ public class AStar {
     /**
      * Cette fonction retourne le tableau des couts utilisés dans l'algorithme
      * de A*.
+     *
+     * @return le cout
      */
     public static int[][][] getCouts() {
         return couts;
@@ -151,6 +153,7 @@ public class AStar {
      */
     private static class NodeComparator implements Comparator<Case> {
 
+        @Override
         public int compare(Case x, Case y) {
             double f1 = couts[x.getLigne()][x.getColonne()][1];
             double f2 = couts[y.getLigne()][y.getColonne()][1];

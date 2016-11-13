@@ -72,8 +72,8 @@ public class RobotAChenilles extends Robot {
     @Override
     public boolean peutRemplirReservoir(){
     	 Carte carte = donnees.getCarte();
-         for (Direction dir : Direction.values()){
-             if (carte.voisinExiste(this.position, dir) && carte.getVoisin(this.position, dir).getNatureTerrain()==NatureTerrain.EAU)
+         for (Direction direc : Direction.values()){
+             if (carte.voisinExiste(this.position, direc) && carte.getVoisin(this.position, direc).getNatureTerrain()==NatureTerrain.EAU)
                  return true;
          }
          return false;

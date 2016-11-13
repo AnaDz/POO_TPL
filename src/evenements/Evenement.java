@@ -70,9 +70,10 @@ public abstract class Evenement implements Comparable<Evenement>, Cloneable {
      * Réalisation de l'interface Cloneable
      *
      * @return évenement
+     * @throws java.lang.CloneNotSupportedException
      */
     @Override
-    public Evenement clone() {
+    public Evenement clone() throws CloneNotSupportedException {
         Evenement copie = null;
         try {
             copie = (Evenement) super.clone();

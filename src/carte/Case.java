@@ -61,7 +61,6 @@ public class Case {
      * MUTATEURS
      * *********************************
      */
-    
     /**
      * Modifie la nature du terrain
      *
@@ -87,6 +86,11 @@ public class Case {
         return Direction.getDir(dif_ligne, dif_colonne);
     }
 
+    /**
+     * Méthode toString
+     *
+     * @return retourne la case sous la forme (ligne,colonne)
+     */
     @Override
     public String toString() {
         return ("(" + ligne + "," + colonne + ")");
