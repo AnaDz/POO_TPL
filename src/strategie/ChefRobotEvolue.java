@@ -23,8 +23,6 @@ public class ChefRobotEvolue {
 	/** Le nombre de robots assignés */
 	int nbOcc = 0;
 	
-	/** Les incendies qui restent à éteindre */
-	ArrayList<Incendie> copyIncendies;
 	
 	public ChefRobotEvolue(DonneesSimulation data, GestionnaireEvents GE){
 		this.data = data;
@@ -32,15 +30,10 @@ public class ChefRobotEvolue {
 		initialise();
 	}
 	
-	private void initialise(){
+	public void initialise(){
 
 		incendiesAssignes = new boolean[data.getListeIncendies().size()];
 		dateLibreRobot = new int[data.getListeRobots().size()];
-		
-		copyIncendies = new ArrayList<Incendie>();
-		for(Incendie inc : data.getListeIncendies()) {
-			copyIncendies.add(inc.clone());
-		}
 		
 		caseEau = new ArrayList<Case>();
 		for(int i = 0; i < data.getCarte().getNbLignes(); i++)
@@ -120,7 +113,7 @@ public class ChefRobotEvolue {
 			
 	}
 	
-	//a refaire
+	
 	public void assigneRobotIncendie(int indexRob, int indexInc, int date_debut) {
 		Robot rob = data.getListeRobots().get(indexRob);
 		Incendie inc = data.getListeIncendies().get(indexInc);
@@ -208,6 +201,10 @@ public class ChefRobotEvolue {
 	
 	public void libereAssignement(int indexInc) {
 		incendiesAssignes[indexInc] = false;
+	}
+	
+	public int getNbRobots(){
+		return data.getListeRobots().size();
 	}
 	
 }

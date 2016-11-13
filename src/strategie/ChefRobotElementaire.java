@@ -19,10 +19,6 @@ public class ChefRobotElementaire {
 	 * incendieAssignes[i] = true si le ième incendie est assigné*/
 	boolean [] incendiesAssignes;
 	
-	/** Le tableau d'assignement des robots
-	 * incendieAssignes[i] = true si le ième robot est assigné*/
-	boolean [] robotsAssignes;
-	
 	/** La date à partir de laquelle le robot est libre */
 	int [] dateLibreRobot;
 	
@@ -37,10 +33,9 @@ public class ChefRobotElementaire {
 		return pasDeTps;
 	}
 	
-	private void initialise(){
+	public void initialise(){
 
 		incendiesAssignes = new boolean[data.getListeIncendies().size()];
-		robotsAssignes = new boolean[data.getListeRobots().size()];
 		dateLibreRobot = new int[data.getListeRobots().size()];
 		
 		caseEau = new ArrayList<Case>();
@@ -73,7 +68,7 @@ public class ChefRobotElementaire {
 	public void donneDirectives(int date_debut) {
 		System.out.println(data.getListeRobots());
 		incendiesAssignes = new boolean[data.getListeIncendies().size()];
-		for(int i = 0; i < robotsAssignes.length; i++) {
+		for(int i = 0; i < data.getListeRobots().size(); i++) {
 				for(int j = 0; j < incendiesAssignes.length; j++) {
 					if(dateLibreRobot[i] <= date_debut && incendiesAssignes[j] == false && data.getListeRobots().get(i).getAction() == Action.INNOCUPE && data.getListeIncendies().get(j).getNbLitres() > 0) {
 						System.out.println("\tJ'assigne le robot en "+data.getListeRobots().get(i).getPosition()+ " à l'incendie en "+data.getListeIncendies().get(j).getCaseIncendie());
@@ -90,7 +85,6 @@ public class ChefRobotElementaire {
 		int [][][] couts = AStar.getCouts();
 		if(chemin != null) {
 			incendiesAssignes[indexInc] = true;
-			robotsAssignes[indexRob] = true;
 			int finDeplacement = bougeRobot(rob, chemin, couts, date_debut);
 			verseEau(rob, inc, finDeplacement);
 			if(rob.getCapaciteMax() != (int) Double.POSITIVE_INFINITY) {

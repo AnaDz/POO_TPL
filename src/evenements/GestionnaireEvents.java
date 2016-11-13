@@ -98,6 +98,11 @@ public class GestionnaireEvents {
 			Evenement e = new ProgrammeFin(Integer.MAX_VALUE);
             ajouteEvenement(e);
 			poubelle.clear();
+			if(chefEvolue != null) {
+				chefEvolue.initialise();
+			} else {
+				chefElem.initialise();
+			}
 		}
 		
 	}
