@@ -33,6 +33,11 @@ public class GestionnaireEvents {
 		poubelle = new ArrayList<Evenement>();
 	}
 	
+	public GestionnaireEvents(int pasDeTps) {
+		this();
+		h = pasDeTps;
+	}
+	
 	public double getPasDeTemps() {
 		//System.out.println(listeEvenements.comparator());
 		return h;
@@ -48,7 +53,7 @@ public class GestionnaireEvents {
 	
 	public void incrementeDate(){
 		dateSimulation += 1;
-		if(modeRestart == false && chef != null && dateSimulation%chef.getPasDeTps() == 0) {
+		if(chef != null && dateSimulation%chef.getPasDeTps() == 0) {
 			System.out.println("Le chef élémentaire donne des directives, date = "+dateSimulation +" :");
 			chef.donneDirectives(dateSimulation);
 		}
@@ -71,16 +76,32 @@ public class GestionnaireEvents {
 	}
 	
 	public void restartGestionnaireEvents(){
+
 		this.dateSimulation = -1;
-		this.listeEvenements.addAll(poubelle);
-		poubelle.clear();
-		modeRestart = true;
+		if(chef == null) {
+			this.listeEvenements.addAll(poubelle);
+			poubelle.clear();
+		} else {
+			this.listeEvenements.clear();
+			Evenement e = new ProgrammeFin(Integer.MAX_VALUE);
+            ajouteEvenement(e);
+			poubelle.clear();
+		}
+		
 	}
 	
 	public boolean simulationTerminee(){
 		return listeEvenements.isEmpty();
 	}
 	
+	public void supprimeDernierElement(){
+		PriorityQueue<Evenement> listeEvenementsNew = new PriorityQueue<Evenement>(); 
+		while(listeEvenements.size() > 1) {
+		        listeEvenementsNew.add(listeEvenements.poll());
+		}
+		listeEvenements.clear();
+		listeEvenements = listeEvenementsNew;
+	}
 	
 	public PriorityQueue<Evenement> getListeEvenement(){
 		return listeEvenements;

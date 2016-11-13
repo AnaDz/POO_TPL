@@ -26,8 +26,7 @@ public class RobotARoues extends Robot {
     
     @Override
     public double getVitesse(NatureTerrain nature) {
-        String natureS = nature.toString();
-        if(natureS == "TERRAIN_LIBRE" || natureS == "HABITAT") {
+        if (nature == NatureTerrain.TERRAIN_LIBRE || nature == NatureTerrain.HABITAT) {
         	return this.vitesseDefaut;
         } else {
         	return 0;
@@ -63,12 +62,10 @@ public class RobotARoues extends Robot {
     @Override
     public boolean peutRemplirReservoir(){
     	Carte carte = donnees.getCarte();
-    	if(this.volumeRestant < this.capaciteMax) {
-	        for (Direction dir : Direction.values()){
-	            if (carte.voisinExiste(this.position, dir) && carte.getVoisin(this.position, dir).getNatureTerrain()==NatureTerrain.EAU)
-	                return true;
-	        }
-    	}
+        for (Direction dir : Direction.values()){
+            if (carte.voisinExiste(this.position, dir) && carte.getVoisin(this.position, dir).getNatureTerrain()==NatureTerrain.EAU)
+                return true;
+        }
         return false;
     }
     

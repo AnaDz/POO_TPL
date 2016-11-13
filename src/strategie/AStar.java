@@ -25,8 +25,8 @@ public class AStar {
      * @param rob	le robot qui doit se déplacer
      * @param deb	la case d'où part le robot
      * @param fin	la case où doit arriver le robot
-     * @param h	le pas de temps définit dans le gestionnaire d'événements
-     * @return	le plus court chemin de deb à fin
+     * @param h		le pas de temps définit dans le gestionnaire d'événements
+     * @return		le plus court chemin de deb à fin
      */
     public static List<Case> trouveChemin(Carte carte, Robot rob, Case deb, Case fin, double h) {
         /**
@@ -55,10 +55,10 @@ public class AStar {
          * Algorithme A* *
          */
         couts[deb.getLigne()][deb.getColonne()][0] = 0;
-        couts[deb.getLigne()][deb.getColonne()][1] = 0 + heuristique(deb, fin);
+        couts[deb.getLigne()][deb.getColonne()][1] = heuristique(deb, fin);
         openQueue.add(deb);
         while (!openQueue.isEmpty()) {
-            Case u = openQueue.poll(); //on dépile u
+            Case u = openQueue.poll(); //on dépile u, on obtient l'élément ayant le plus bas score de f
             if (u == fin) {
                 return path(path, fin);
             }
@@ -69,9 +69,10 @@ public class AStar {
                 //On ignore les voisins déjà évalués et les cases où le robot ne peut pas aller
                 double vitesse = rob.getVitesse(v.getNatureTerrain());
                 if (vitesse == 0 || closedList.contains(v)) {
+                	//System.out.println("vitesse =" +rob.getVitesse(v.getNatureTerrain())+" en "+v);
                     continue;
                 }
-
+                
                 //La distance du début jusqu'au voisin.
                 int distanceBetweenUandV = rob.getDureeDeplacement(h, u);
                 int tentativeG = distanceBetweenUandV + couts[u.getLigne()][u.getColonne()][0];
@@ -124,7 +125,6 @@ public class AStar {
     private static List<Case> path(Map<Case, Case> path, Case destination) {
         assert path != null;
         assert destination != null;
-
         List<Case> pathList = new ArrayList<Case>();
         pathList.add(destination);
         while (path.containsKey(destination)) {

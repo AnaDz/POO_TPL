@@ -17,7 +17,9 @@ import robots.Robot;
 import strategie.AStar;
 import strategie.ChefRobotElementaire;
 
-
+//desertOfDeath-20x20.map
+//mushroomOfHell-20x20.map
+//spiralOfMadness-50x50.map
 public class TestChefRobotElementaire {
 	public static void main(String[] args) {
 		if (args.length < 1) {

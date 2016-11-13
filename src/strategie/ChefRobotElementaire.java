@@ -71,6 +71,7 @@ public class ChefRobotElementaire {
     }
  	
 	public void donneDirectives(int date_debut) {
+		System.out.println(data.getListeRobots());
 		incendiesAssignes = new boolean[data.getListeIncendies().size()];
 		for(int i = 0; i < robotsAssignes.length; i++) {
 				for(int j = 0; j < incendiesAssignes.length; j++) {
@@ -92,10 +93,13 @@ public class ChefRobotElementaire {
 			robotsAssignes[indexRob] = true;
 			int finDeplacement = bougeRobot(rob, chemin, couts, date_debut);
 			verseEau(rob, inc, finDeplacement);
-			dateLibreRobot[indexRob] = finDeplacement+rob.getDureeVerser(GE.getPasDeTemps(), rob.getCapaciteMax());
 			if(rob.getCapaciteMax() != (int) Double.POSITIVE_INFINITY) {
 				remplirEau(rob, inc.getCaseIncendie(), finDeplacement+rob.getDureeVerser(GE.getPasDeTemps(), rob.getCapaciteMax()));
+			} else {
+				dateLibreRobot[indexRob] = finDeplacement+rob.getDureeVerser(GE.getPasDeTemps(), data.getListeIncendies().get(indexInc).getNbLitres());
 			}
+		} else {
+			System.out.println("Malheur ! Le robot en "+rob.getPosition()+" n'arrive pas à aller en "+inc.getCaseIncendie());
 		}
 	}
 	

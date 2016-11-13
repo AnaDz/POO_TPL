@@ -9,7 +9,13 @@ import java.util.*;
 import evenements.*;
 import robots.*;
 import java.lang.Math;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
+import javax.swing.Timer;
 import strategie.ChefRobotElementaire;
+import java.text.DecimalFormat;
 
 public class Simulateur implements Simulable {
 
@@ -150,8 +156,21 @@ public class Simulateur implements Simulable {
 	        refreshIncendies();
             refreshRobots();
     	}
-    	else
+    	else {
     		System.out.println("Simulation terminée.");
+    		try {
+                Thread.sleep(3000);
+                DecimalFormat format = new DecimalFormat("#.00");
+                System.out.print("########################################\n");
+                System.out.print("Les POKEMON™ ont travaillé dur pendant\n\t\t");
+                System.out.print(format.format(GE.getPasDeTemps()*GE.getDateSimulation()/60));
+                System.out.print("\t\t\nheures pour éteindre tous les incendies !\n");
+                System.out.print("########################################");
+                System.exit(0);
+             }  catch (InterruptedException e) {
+            	 System.exit(1);
+             }
+    	}
     }
 
     @Override
@@ -280,15 +299,20 @@ public class Simulateur implements Simulable {
     private void refreshIncendies(){
     	if(data.getListeIncendies() != null) {
     		ImageElement image = null;
+    		boolean resteIncendie = false;
 	    	for(Incendie inc : data.getListeIncendies()) {
 	    		int x = inc.getCaseIncendie().getLigne() * data.getCarte().getTailleCases();
 	            int y = inc.getCaseIncendie().getColonne() * data.getCarte().getTailleCases();
 	            if(inc.getNbLitres() > 0) {
+	            	resteIncendie = true;
 	    	        image = loadImage(y, x, tailleCases, "images/fire.png");
 	            } else {
 	            	image = loadImage(y, x-(data.getCarte().getTailleCases())/3, tailleCases, "images/smoke.png");
 	            }
 	            gui.addGraphicalElement(image);
+	    	}
+	    	if(resteIncendie == false) {
+		    	GE.supprimeDernierElement();
 	    	}
     	}
     }
