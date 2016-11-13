@@ -165,45 +165,41 @@ public class GestionnaireEvents {
             this.listeEvenements.clear();
             Evenement e = new ProgrammeFin(Integer.MAX_VALUE);
             ajouteEvenement(e);
-            poubelle.clear();
-        }
-
-    }
-
-    /**
-     * Permet de savoir quand la simulation est terminée
-     *
-     * @return true (terminée) ou false (en cours)
-     */
-    public boolean simulationTerminee() {
-        return listeEvenements.isEmpty();
-    }
-
-    /**
-     * Supprimer un événement lorsqu'il a été traité
-     */
-    public void supprimeDernierElement() {
-        PriorityQueue<Evenement> listeEvenementsNew = new PriorityQueue<Evenement>();
-        while (listeEvenements.size() > 1) {
-            listeEvenementsNew.add(listeEvenements.poll());
-        }
-        listeEvenements.clear();
-        listeEvenements = listeEvenementsNew;
-    }
-
-    /**
-     * Méthode toString
-     *
-     * @return liste des événements
-     */
-    @Override
-    public String toString() {
-        Iterator<Evenement> it = listeEvenements.iterator();
-        String res = "";
-        while (it.hasNext()) {
-            res += it.next().toString();
-        }
-        return res;
-    }
-
+			poubelle.clear();
+			if(chefEvolue != null) {
+				chefEvolue.initialise();
+			} else {
+				chefElem.initialise();
+			}
+		}
+		
+	}
+	
+	public boolean simulationTerminee(){
+		return listeEvenements.isEmpty();
+	}
+	
+	public void supprimeDernierElement(){
+		PriorityQueue<Evenement> listeEvenementsNew = new PriorityQueue<Evenement>(); 
+		while(listeEvenements.size() > 1) {
+		        listeEvenementsNew.add(listeEvenements.poll());
+		}
+		listeEvenements.clear();
+		listeEvenements = listeEvenementsNew;
+	}
+	
+	public PriorityQueue<Evenement> getListeEvenement(){
+		return listeEvenements;
+	}
+	
+	@Override
+	public String toString(){
+		Iterator<Evenement> it = listeEvenements.iterator();
+		String res = "";
+		while(it.hasNext()){
+			res += it.next().toString();
+		}
+		return res;
+	}
+	
 }
