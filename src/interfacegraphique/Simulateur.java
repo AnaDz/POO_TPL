@@ -452,6 +452,9 @@ public class Simulateur implements Simulable {
     	gui.addGraphicalElement(image);
     	
     	if(data.getIncendie(rob.getPosition()).getNbLitres() <= 0) {
+    		if(GE.getChefEvolue() != null) {
+        		GE.getChefEvolue().libereAssignement(data.getListeIncendies().indexOf(data.getIncendie(rob.getPosition())));
+        	}
     		rob.switchAction(Action.INNOCUPE);
     	} else if(rob.getVolumeRestant() < qte){
     		rob.deverserEau(rob.getVolumeRestant());
@@ -459,9 +462,14 @@ public class Simulateur implements Simulable {
     		rob.deverserEau(qte);
     	}
     	
-    	//Si le reservoir du robot est vide ou que l'incendie est éteint, alors il devient innocupé
+    	//Si le reservoir du robot est vide alors il devient innocupé
     	if(rob.getVolumeRestant() <= 0){
     		rob.switchAction(Action.INNOCUPE);
+    		if(GE.getChefEvolue() != null) {
+        		GE.getChefEvolue().libereAssignement(data.getListeIncendies().indexOf(data.getIncendie(rob.getPosition())));
+        	}
     	}
+    	
+    	
     }
 }
