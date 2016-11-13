@@ -1,16 +1,14 @@
 package evenements;
 
 import java.util.*;
-import strategie.ChefRobotElementaire;
+import strategie.*;
 
 
 public class GestionnaireEvents {
 	
 	// Le chef en charge de l'opération
-	private ChefRobotElementaire chef;
-	
-	// indique si un restart a été effectué
-	private boolean modeRestart = false;
+	private ChefRobotElementaire chefElem = null;
+	private ChefRobotEvolue chefEvolue = null;
 	
 	//Date courante de la simulation
 	private int dateSimulation;
@@ -44,18 +42,24 @@ public class GestionnaireEvents {
 	}
 	
 	public void setChef(ChefRobotElementaire chef) {
-		this.chef = chef;
+		chefElem = chef;
 	}
 
+	public void setChef(ChefRobotEvolue chef) {
+		chefEvolue = chef;
+	}
+	
 	public void ajouteEvenement(Evenement e){
 		listeEvenements.add(e);
 	}
 	
 	public void incrementeDate(){
 		dateSimulation += 1;
-		if(chef != null && dateSimulation%chef.getPasDeTps() == 0) {
+		if((chefElem != null && dateSimulation%chefElem.getPasDeTps() == 0)) {
 			System.out.println("Le chef élémentaire donne des directives, date = "+dateSimulation +" :");
-			chef.donneDirectives(dateSimulation);
+			chefElem.donneDirectives(dateSimulation);
+		} else if (chefEvolue != null) {
+			chefEvolue.donneDirectives(dateSimulation);
 		}
 		
 		Iterator<Evenement> it = listeEvenements.iterator();
@@ -75,10 +79,18 @@ public class GestionnaireEvents {
 		return dateSimulation;
 	}
 	
+	public ChefRobotElementaire getChefElementaire(){
+		return chefElem;
+	}
+	
+	public ChefRobotEvolue getChefEvolue(){
+		return chefEvolue;
+	}
+	
 	public void restartGestionnaireEvents(){
 
 		this.dateSimulation = -1;
-		if(chef == null) {
+		if(chefElem == null && chefEvolue == null) {
 			this.listeEvenements.addAll(poubelle);
 			poubelle.clear();
 		} else {

@@ -13,7 +13,9 @@ import java.util.zip.DataFormatException;
 import robots.Robot;
 import strategie.*;
 
-
+//desertOfDeath-20x20.map
+//mushroomOfHell-20x20.map
+//spiralOfMadness-50x50.map
 public class TestChefRobotEvolue {
 	public static void main(String[] args) {
 		if (args.length < 1) {
@@ -26,18 +28,20 @@ public class TestChefRobotEvolue {
             DonneesSimulation data = LecteurDonnees.lire(args[0], false);
             Robot.setDS(data);
             GestionnaireEvents GE = new GestionnaireEvents();
-          
-            
-            ChefRobotEvolue chef = new ChefRobotEvolue(data, GE);
-            chef.phaseEteindre(0);
-            Evenement e = new ProgrammeFin(10000);
+            Evenement e = new ProgrammeFin(Integer.MAX_VALUE);
             GE.ajouteEvenement(e);
+            
+            
             
            //Lancement de la simulation
             int dimFenX = 500;
             int dimFenY = 500;
             GUISimulator gui = new GUISimulator(dimFenX, dimFenY, Color.BLACK);
             Simulateur sim = new Simulateur(gui, data, GE);
+            
+            
+            ChefRobotEvolue chef = new ChefRobotEvolue(data, GE);
+            GE.setChef(chef);
             
            
      

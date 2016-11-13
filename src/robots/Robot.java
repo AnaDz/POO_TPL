@@ -148,24 +148,24 @@ public abstract class Robot {
         double volUnitaire = h * interventionUnitaire * 60; //le volume verser en h minutes
         int duree = (int) (vol/volUnitaire);
         if(duree*volUnitaire < vol)
-        	duree+=1;
-        return duree;
+        	duree += 1;
+        return duree+1;
     }
 
     /**
      * Calcule le nombre d'itérations nécessaires au robot pour remplir un
      * volume vol de son réservoir.
      *
-     * @param h	le temps (en minutes) alloué au robot entre chaque itération
+     * @param h		le temps (en minutes) alloué au robot entre chaque itération
      * @param vol	le volume à remplir
-     * @return	le nombre d'itérations nécessaires
+     * @return		le nombre d'itérations nécessaires
      */
     public int getDureeRemplir(double h, int vol) {
         double volUnitaire = h * capaciteMax / tempsRemplissageComp; //le volume remplit en h minutes
         int duree = (int) (vol/volUnitaire);
         if(duree * volUnitaire < vol)
         	duree += 1;
-        return duree;
+        return duree+1;
     }
 
     /**
