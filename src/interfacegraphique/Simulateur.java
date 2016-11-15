@@ -46,8 +46,7 @@ public class Simulateur implements Simulable {
 
     /**
      * ************************
-     * Nécessaires au restart
-     ************************
+     * Nécessaires au restart ***********************
      */
     /**
      * Tableau sauvegardant la position des robots
@@ -205,7 +204,7 @@ public class Simulateur implements Simulable {
         refreshIncendies();
     }
 
-    /**
+    /*
      * ****************************************************
      * PARTIE DESSIN
      *****************************************************

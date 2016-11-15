@@ -17,15 +17,10 @@ import robots.*;
 public class TestScenario2 {
 
     public static void main(String[] args) {
-        if (args.length < 1) {
-            System.out.println("Syntaxe: java TestSimulateur <nomDeFichier>");
-            System.exit(1);
-        }
-
         try {
         	//Lecture des Données
 
-                DonneesSimulation data = LecteurDonnees.lire(args[0], false);
+                DonneesSimulation data = LecteurDonnees.lire("cartes/carteSujet.map", false);
             
             //Initialisation du gestionnaire d'évenements
             //Scenario 2 + test getDureeRemplir()  et getDureeVerser()
