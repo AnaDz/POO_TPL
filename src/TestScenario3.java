@@ -19,10 +19,10 @@ import robots.*;
 public class TestScenario3 {
 
     public static void main(String[] args) {
-
+        String nomCarte = "cartes/carteSujet.map";
         try {
             //Lecture des Données
-            DonneesSimulation data = LecteurDonnees.lire("cartes/carteSujet.map", false);
+            DonneesSimulation data = LecteurDonnees.lire(nomCarte, false);
 
             //Initialisation du gestionnaire d'évenements
             //Scenario 1
@@ -70,9 +70,9 @@ public class TestScenario3 {
             Simulateur sim = new Simulateur(gui, data, GE);
 
         } catch (FileNotFoundException e) {
-            System.out.println("fichier " + args[0] + " inconnu ou illisible");
+            System.out.println("fichier " + nomCarte + " inconnu ou illisible");
         } catch (DataFormatException e) {
-            System.out.println("\n\t**format du fichier " + args[0] + " invalide: " + e.getMessage());
+            System.out.println("\n\t**format du fichier " + nomCarte + " invalide: " + e.getMessage());
         }
 
     }

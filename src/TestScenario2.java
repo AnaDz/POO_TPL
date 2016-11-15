@@ -12,31 +12,33 @@ import interfacegraphique.Simulateur;
 import evenements.*;
 import robots.*;
 
-/** Ce fichier de test sera à compléter au fur et à mesure de l'avancement de Simulateur.java **/
-
+/**
+ * Ce fichier de test sera à compléter au fur et à mesure de l'avancement de
+ * Simulateur.java *
+ */
 public class TestScenario2 {
 
     public static void main(String[] args) {
+        String nomCarte = "cartes/carteSujet.map";
         try {
-        	//Lecture des Données
+            //Lecture des Données
 
-                DonneesSimulation data = LecteurDonnees.lire("cartes/carteSujet.map", false);
-            
+            DonneesSimulation data = LecteurDonnees.lire(nomCarte, false);
+
             //Initialisation du gestionnaire d'évenements
             //Scenario 2 + test getDureeRemplir()  et getDureeVerser()
             GestionnaireEvents GE = new GestionnaireEvents();
             Robot rob = data.getListeRobots().get(1);
             Evenement e1 = new DeplaceRobot(0, rob, Direction.NORD);
             Evenement e2 = new VerserEau(20, rob, rob.getCapaciteMax());
-            Evenement e3 = new DeplaceRobot(20+rob.getDureeVerser(GE.getPasDeTemps(), rob.getCapaciteMax()), rob, Direction.OUEST);
+            Evenement e3 = new DeplaceRobot(20 + rob.getDureeVerser(GE.getPasDeTemps(), rob.getCapaciteMax()), rob, Direction.OUEST);
             Evenement e4 = new DeplaceRobot(60, rob, Direction.OUEST);
             Evenement e5 = new RemplirReservoir(80, rob);
-            Evenement e6 = new DeplaceRobot(80+rob.getDureeRemplir(GE.getPasDeTemps(), rob.getCapaciteMax()), rob, Direction.EST);
+            Evenement e6 = new DeplaceRobot(80 + rob.getDureeRemplir(GE.getPasDeTemps(), rob.getCapaciteMax()), rob, Direction.EST);
             Evenement e7 = new DeplaceRobot(120, rob, Direction.EST);
             Evenement e8 = new VerserEau(140, rob, rob.getCapaciteMax());
             Evenement e9 = new ProgrammeFin(160);
-            
-            
+
             GE.ajouteEvenement(e1);
             GE.ajouteEvenement(e2);
             GE.ajouteEvenement(e3);
@@ -46,22 +48,18 @@ public class TestScenario2 {
             GE.ajouteEvenement(e7);
             GE.ajouteEvenement(e8);
             GE.ajouteEvenement(e9);
-            
+
             //Lancement de la simulation
             int dimFenX = 500;
             int dimFenY = 500;
             GUISimulator gui = new GUISimulator(dimFenX, dimFenY, Color.BLACK);
             Simulateur sim = new Simulateur(gui, data, GE);
-            
-            
-            
-            
+
         } catch (FileNotFoundException e) {
-            System.out.println("fichier " + args[0] + " inconnu ou illisible");
+            System.out.println("fichier " + nomCarte + " inconnu ou illisible");
         } catch (DataFormatException e) {
-            System.out.println("\n\t**format du fichier " + args[0] + " invalide: " + e.getMessage());
+            System.out.println("\n\t**format du fichier " + nomCarte + " invalide: " + e.getMessage());
         }
-        
+
     }
 }
-
