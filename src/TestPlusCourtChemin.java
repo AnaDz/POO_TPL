@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.zip.DataFormatException;
 
 import carte.Case;
@@ -28,25 +29,33 @@ public class TestPlusCourtChemin {
             Robot.setDS(data);
             GestionnaireEvents gE = new GestionnaireEvents();
             //Calcul des plus courts chemins
-            //ChefRobot chef = new ChefRobot(data, gE);
+            ChefRobotElementaire chef = new ChefRobotElementaire(data, gE, 0);
             Carte carte = data.getCarte();
             Robot rob = data.getListeRobots().get(0);
             Case deb = rob.getPosition();
             Case fin = carte.getCase(7, 3);
-            //chef.bougeRobot(rob, deb, fin, 0);
+            List<Case> chemin = AStar.trouveChemin(data.getCarte(), rob, deb, fin, gE.getPasDeTemps());
+            int[][][] couts = AStar.getCouts();
+            chef.bougeRobot(rob, chemin, couts, 0);
             
             
             rob = data.getListeRobots().get(1);
             deb = rob.getPosition();
-            //chef.bougeRobot(rob, deb, fin, 0);
+            chemin = AStar.trouveChemin(data.getCarte(), rob, deb, fin, gE.getPasDeTemps());
+            couts = AStar.getCouts();
+            chef.bougeRobot(rob, chemin, couts, 0);
             
             rob = data.getListeRobots().get(2);
             deb = rob.getPosition();
-            //chef.bougeRobot(rob, deb, fin, 0);
+            chemin = AStar.trouveChemin(data.getCarte(), rob, deb, fin, gE.getPasDeTemps());
+            couts = AStar.getCouts();
+            chef.bougeRobot(rob, chemin, couts, 0);
             
             rob = data.getListeRobots().get(3);
             deb = rob.getPosition();
-            //chef.bougeRobot(rob, deb, fin, 0);
+            chemin = AStar.trouveChemin(data.getCarte(), rob, deb, fin, gE.getPasDeTemps());
+            couts = AStar.getCouts();
+            chef.bougeRobot(rob, chemin, couts, 0);
             
             
             //Lancement de la simulation
