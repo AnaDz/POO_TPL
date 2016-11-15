@@ -66,6 +66,4 @@ public abstract class Evenement implements Comparable<Evenement> {
         }
     }
 
-    
-
 }

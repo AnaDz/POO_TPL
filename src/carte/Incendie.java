@@ -1,7 +1,7 @@
 package carte;
 
-public class Incendie {
 
+public class Incendie {
     private Case caseIncendie;
     private int nbLitres;
 
@@ -68,6 +68,11 @@ public class Incendie {
         this.nbLitres -= vol;
     }
 
+    /**
+     * Méthode toString
+     *
+     * @return l'emplacement et le nom de litres d'eau pour éteindre l'incendie
+     */
     @Override
     public String toString() {
         return "Incendie en position " + caseIncendie.toString() + " d'intensité " + nbLitres;

@@ -56,6 +56,7 @@ public abstract class Robot {
      */
     /**
      * Retourne la case sur laquelle est le robot.
+     *
      * @return case
      */
     public Case getPosition() {
@@ -91,6 +92,8 @@ public abstract class Robot {
 
     /**
      * Retourne la capacité maximale du reservoir du robot
+     *
+     * @return capacité maximale du robot
      */
     public int getCapaciteMax() {
         return capaciteMax;
@@ -98,6 +101,8 @@ public abstract class Robot {
 
     /**
      * Retourne le volume contenu dans le réservoir du robot
+     *
+     * @return volume restant d'eau dans le robot
      */
     public int getVolumeRestant() {
         return this.volumeRestant;
@@ -106,6 +111,8 @@ public abstract class Robot {
     /**
      * Retourne le temps nécessaire au robot pour remplir son réservoir de 0 à
      * sa capacité maximale
+     *
+     * @return temps pour remplir complètement le robot
      */
     public int getTempsRemplissageComp() {
         return tempsRemplissageComp;
@@ -113,6 +120,8 @@ public abstract class Robot {
 
     /**
      * Retourne le nombre de litres par seconde que peut verser le robot
+     *
+     * @return Nombre de litres/s versés
      */
     public int getInterventionUnitaire() {
         return interventionUnitaire;
@@ -124,15 +133,16 @@ public abstract class Robot {
      *
      * @param h	le temps (en minutes) alloué au robot entre chaque itération
      * @param c	la case voisine à la position du robot
+     * @return La durée du déplacement (en nb d'itérations)
      */
     public int getDureeDeplacement(double h, Case c) {
         NatureTerrain nature = c.getNatureTerrain();
         int DistanceTotale = donnees.getCarte().getTailleCases();
         int DistanceParcourue = (int) (this.getVitesse(nature) * h * 1000 / 60);
         int duree = DistanceTotale / DistanceParcourue;
-		if(duree*DistanceParcourue < DistanceTotale) {
-			duree += 1;
-		}
+        if (duree * DistanceParcourue < DistanceTotale) {
+            duree += 1;
+        }
         return duree;
     }
 
@@ -146,31 +156,35 @@ public abstract class Robot {
      */
     public int getDureeVerser(double h, int vol) {
         double volUnitaire = h * interventionUnitaire * 60; //le volume verser en h minutes
-        int duree = (int) (vol/volUnitaire);
-        if(duree*volUnitaire < vol)
-        	duree += 1;
-        return duree+1;
+        int duree = (int) (vol / volUnitaire);
+        if (duree * volUnitaire < vol) {
+            duree += 1;
+        }
+        return duree + 1;
     }
 
     /**
      * Calcule le nombre d'itérations nécessaires au robot pour remplir un
      * volume vol de son réservoir.
      *
-     * @param h		le temps (en minutes) alloué au robot entre chaque itération
+     * @param h	le temps (en minutes) alloué au robot entre chaque itération
      * @param vol	le volume à remplir
-     * @return		le nombre d'itérations nécessaires
+     * @return	le nombre d'itérations nécessaires
      */
     public int getDureeRemplir(double h, int vol) {
         double volUnitaire = h * capaciteMax / tempsRemplissageComp; //le volume remplit en h minutes
-        int duree = (int) (vol/volUnitaire);
-        if(duree * volUnitaire < vol)
-        	duree += 1;
-        return duree+1;
+        int duree = (int) (vol / volUnitaire);
+        if (duree * volUnitaire < vol) {
+            duree += 1;
+        }
+        return duree + 1;
     }
 
     /**
      * Retourne le chemin du dossier dans lequel les images propres au type du
      * robot sont stockées.
+     *
+     * @return le nom de l'image du robot
      */
     public abstract String getFileOfRobot();
 
@@ -228,6 +242,8 @@ public abstract class Robot {
 
     /**
      * Retourne true peut remplir son réservoir, false sinon
+     *
+     * @return true ou false
      */
     public abstract boolean peutRemplirReservoir();
 
@@ -235,7 +251,7 @@ public abstract class Robot {
      * Augmente la quantité d'eau présente dans le reservoir, en vérifiant que
      * le robot est sur une case appropriée
      *
-     * @param vol	le volume ajoutée au réservoir
+     * @param qte quantité que l'on veut ajouter au reservoir
      */
     public abstract void remplirReservoir(int qte);
 
@@ -244,18 +260,17 @@ public abstract class Robot {
      * verser et qu'il ait sur un incendie, false sinon
      *
      * @param vol	le volume que robot veut verser
+     * @return true ou false
      */
     public boolean peutDeverserEau(int vol) {
         Incendie incendievise = donnees.getIncendie(this.position);
-        if (incendievise != null && vol <= this.volumeRestant) {
-            return true;
-        } else {
-            return false;
-        }
+        return incendievise != null && vol <= this.volumeRestant;
     }
 
     /**
      * Deverse vol litres d'eau
+     *
+     * @param vol volume d'eau à verser sur l'incendie
      */
     public void deverserEau(int vol) {
         Incendie incendievise = donnees.getIncendie(this.position);
@@ -285,10 +300,14 @@ public abstract class Robot {
         this.dir = dir;
     }
 
+    /**
+     * méthode toString habituelle
+     *
+     * @return une description du robot
+     */
     @Override
     public String toString() {
-        return new String("Le robot réalise l'action :" + this.getAction()+ "en position "+position.toString());
+        return "Le robot réalise l'action :" + this.getAction() + "en position " + position.toString();
     }
-
 
 }

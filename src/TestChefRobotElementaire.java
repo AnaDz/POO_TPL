@@ -44,7 +44,7 @@ public class TestChefRobotElementaire {
             Simulateur sim = new Simulateur(gui, data, GE);
             
             
-            ChefRobotElementaire chef = new ChefRobotElementaire(data, GE, 300);
+            ChefRobotElementaire chef = new ChefRobotElementaire(data, GE, 30);
             GE.setChef(chef);
 
             
