@@ -1,6 +1,6 @@
 package evenements;
 
-public abstract class Evenement implements Comparable<Evenement>, Cloneable {
+public abstract class Evenement implements Comparable<Evenement> {
 
     long date;
 
@@ -66,20 +66,6 @@ public abstract class Evenement implements Comparable<Evenement>, Cloneable {
         }
     }
 
-    /**
-     * Réalisation de l'interface Cloneable
-     *
-     * @return évenement
-     */
-    @Override
-    public Evenement clone() {
-        Evenement copie = null;
-        try {
-            copie = (Evenement) super.clone();
-        } catch (CloneNotSupportedException cnse) {
-            cnse.printStackTrace(System.err);
-        }
-        return copie;
-    }
+    
 
 }

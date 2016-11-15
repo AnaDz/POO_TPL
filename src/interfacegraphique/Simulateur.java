@@ -9,12 +9,6 @@ import java.util.*;
 import evenements.*;
 import robots.*;
 import java.lang.Math;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JFrame;
-import javax.swing.JTextArea;
-import javax.swing.Timer;
-import strategie.ChefRobotElementaire;
 import java.text.DecimalFormat;
 
 public class Simulateur implements Simulable {
@@ -274,7 +268,7 @@ public class Simulateur implements Simulable {
                 break;
             default:
                 System.out.println("Nature du terrain non reconnue. Fermeture de la fenêtre graphique");
-                //A faire
+                System.exit(1);
                 break;
         }
     }
